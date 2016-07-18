@@ -32,7 +32,6 @@
       this.TB_DataPath = new System.Windows.Forms.TextBox();
       this.BTN_StartProcessing = new System.Windows.Forms.Button();
       this.TB_SavePath = new System.Windows.Forms.TextBox();
-      this.button1 = new System.Windows.Forms.Button();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.RB_NewExperiment = new System.Windows.Forms.RadioButton();
       this.RB_ExistingExperiment = new System.Windows.Forms.RadioButton();
@@ -61,6 +60,10 @@
       this.BTN_ImportParametrs = new System.Windows.Forms.Button();
       this.BTN_ExportParametrs = new System.Windows.Forms.Button();
       this.ProgressBar = new System.Windows.Forms.ProgressBar();
+      this.label8 = new System.Windows.Forms.Label();
+      this.label9 = new System.Windows.Forms.Label();
+      this.LB_FileProperties = new System.Windows.Forms.ListBox();
+      this.label10 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
@@ -80,10 +83,10 @@
       // 
       // BTN_StartProcessing
       // 
-      this.BTN_StartProcessing.Location = new System.Drawing.Point(1105, 481);
+      this.BTN_StartProcessing.Location = new System.Drawing.Point(460, 418);
       this.BTN_StartProcessing.Margin = new System.Windows.Forms.Padding(2);
       this.BTN_StartProcessing.Name = "BTN_StartProcessing";
-      this.BTN_StartProcessing.Size = new System.Drawing.Size(56, 19);
+      this.BTN_StartProcessing.Size = new System.Drawing.Size(68, 29);
       this.BTN_StartProcessing.TabIndex = 1;
       this.BTN_StartProcessing.Text = "Process";
       this.BTN_StartProcessing.UseVisualStyleBackColor = true;
@@ -96,15 +99,6 @@
       this.TB_SavePath.Name = "TB_SavePath";
       this.TB_SavePath.Size = new System.Drawing.Size(877, 20);
       this.TB_SavePath.TabIndex = 7;
-      // 
-      // button1
-      // 
-      this.button1.Location = new System.Drawing.Point(1230, 522);
-      this.button1.Name = "button1";
-      this.button1.Size = new System.Drawing.Size(75, 23);
-      this.button1.TabIndex = 8;
-      this.button1.Text = "BTN_LoadPlace";
-      this.button1.UseVisualStyleBackColor = true;
       // 
       // splitContainer1
       // 
@@ -130,7 +124,6 @@
       this.splitContainer1.Size = new System.Drawing.Size(1383, 68);
       this.splitContainer1.SplitterDistance = 221;
       this.splitContainer1.TabIndex = 9;
-      this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
       // 
       // RB_NewExperiment
       // 
@@ -143,6 +136,7 @@
       this.RB_NewExperiment.TabStop = true;
       this.RB_NewExperiment.Text = "Новый эксперимент";
       this.RB_NewExperiment.UseVisualStyleBackColor = true;
+      this.RB_NewExperiment.CheckedChanged += new System.EventHandler(this.RB_NewExperiment_CheckedChanged);
       // 
       // RB_ExistingExperiment
       // 
@@ -153,6 +147,7 @@
       this.RB_ExistingExperiment.TabIndex = 11;
       this.RB_ExistingExperiment.Text = "Проведенный эксперимент";
       this.RB_ExistingExperiment.UseVisualStyleBackColor = true;
+      this.RB_ExistingExperiment.CheckedChanged += new System.EventHandler(this.RB_ExistingExperiment_CheckedChanged);
       // 
       // label1
       // 
@@ -180,6 +175,7 @@
       this.BTN_ChooseInputFolder.TabIndex = 10;
       this.BTN_ChooseInputFolder.Text = "Выбрать...";
       this.BTN_ChooseInputFolder.UseVisualStyleBackColor = true;
+      this.BTN_ChooseInputFolder.Click += new System.EventHandler(this.BTN_ChooseInputFolder_Click);
       // 
       // BTN_ChooseExportFolder
       // 
@@ -189,6 +185,7 @@
       this.BTN_ChooseExportFolder.TabIndex = 11;
       this.BTN_ChooseExportFolder.Text = "Выбрать...";
       this.BTN_ChooseExportFolder.UseVisualStyleBackColor = true;
+      this.BTN_ChooseExportFolder.Click += new System.EventHandler(this.BTN_ChooseExportFolder_Click);
       // 
       // label3
       // 
@@ -208,6 +205,7 @@
       this.CB_OverwriteFiles.TabIndex = 10;
       this.CB_OverwriteFiles.Text = "Перезаписывать файлы";
       this.CB_OverwriteFiles.UseVisualStyleBackColor = true;
+      this.CB_OverwriteFiles.CheckedChanged += new System.EventHandler(this.CB_OverwriteFiles_CheckedChanged);
       // 
       // imageBox1
       // 
@@ -235,6 +233,7 @@
       this.CB_DenoiseMode.Name = "CB_DenoiseMode";
       this.CB_DenoiseMode.Size = new System.Drawing.Size(251, 21);
       this.CB_DenoiseMode.TabIndex = 10;
+      this.CB_DenoiseMode.SelectedIndexChanged += new System.EventHandler(this.CB_DenoiseMode_SelectedIndexChanged);
       // 
       // label5
       // 
@@ -252,6 +251,7 @@
       this.CB_MaskingMode.Name = "CB_MaskingMode";
       this.CB_MaskingMode.Size = new System.Drawing.Size(251, 21);
       this.CB_MaskingMode.TabIndex = 12;
+      this.CB_MaskingMode.SelectedIndexChanged += new System.EventHandler(this.CB_MaskingMode_SelectedIndexChanged);
       // 
       // label4
       // 
@@ -268,6 +268,8 @@
       this.tableLayoutPanel1.ColumnCount = 2;
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 292F));
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 134F));
+      this.tableLayoutPanel1.Controls.Add(this.label8, 1, 0);
+      this.tableLayoutPanel1.Controls.Add(this.label9, 1, 2);
       this.tableLayoutPanel1.Controls.Add(this.CB_MaskingMode, 0, 3);
       this.tableLayoutPanel1.Controls.Add(this.label4, 0, 0);
       this.tableLayoutPanel1.Controls.Add(this.label5, 0, 2);
@@ -290,6 +292,7 @@
       this.BTN_LoadMask.TabIndex = 15;
       this.BTN_LoadMask.Text = "Загрузить маску";
       this.BTN_LoadMask.UseVisualStyleBackColor = true;
+      this.BTN_LoadMask.Click += new System.EventHandler(this.BTN_LoadMask_Click);
       // 
       // BTN_ExportMask
       // 
@@ -299,6 +302,7 @@
       this.BTN_ExportMask.TabIndex = 16;
       this.BTN_ExportMask.Text = "Экспортировать маску";
       this.BTN_ExportMask.UseVisualStyleBackColor = true;
+      this.BTN_ExportMask.Click += new System.EventHandler(this.BTN_ExportMask_Click);
       // 
       // BTN_SeeAllMasks
       // 
@@ -308,6 +312,7 @@
       this.BTN_SeeAllMasks.TabIndex = 17;
       this.BTN_SeeAllMasks.Text = "Просмотреть все маски";
       this.BTN_SeeAllMasks.UseVisualStyleBackColor = true;
+      this.BTN_SeeAllMasks.Click += new System.EventHandler(this.BTN_SeeAllMasks_Click);
       // 
       // CB_UseCleanFiles
       // 
@@ -318,6 +323,7 @@
       this.CB_UseCleanFiles.TabIndex = 18;
       this.CB_UseCleanFiles.Text = "Взять готовые \"чистые\" файлы";
       this.CB_UseCleanFiles.UseVisualStyleBackColor = true;
+      this.CB_UseCleanFiles.CheckedChanged += new System.EventHandler(this.CB_UseCleanFiles_CheckedChanged);
       // 
       // BTN_EditMask
       // 
@@ -327,6 +333,7 @@
       this.BTN_EditMask.TabIndex = 19;
       this.BTN_EditMask.Text = "Редактировать вручную";
       this.BTN_EditMask.UseVisualStyleBackColor = true;
+      this.BTN_EditMask.Click += new System.EventHandler(this.BTN_EditMask_Click);
       // 
       // CB_RewriteMasks
       // 
@@ -337,6 +344,7 @@
       this.CB_RewriteMasks.TabIndex = 20;
       this.CB_RewriteMasks.Text = "Пересчитывать маски";
       this.CB_RewriteMasks.UseVisualStyleBackColor = true;
+      this.CB_RewriteMasks.CheckedChanged += new System.EventHandler(this.CB_RewriteMasks_CheckedChanged);
       // 
       // textBox1
       // 
@@ -371,6 +379,7 @@
       this.BTN_ImportParametrs.TabIndex = 12;
       this.BTN_ImportParametrs.Text = "Импорт настроек";
       this.BTN_ImportParametrs.UseVisualStyleBackColor = true;
+      this.BTN_ImportParametrs.Click += new System.EventHandler(this.BTN_ImportParametrs_Click);
       // 
       // BTN_ExportParametrs
       // 
@@ -380,6 +389,7 @@
       this.BTN_ExportParametrs.TabIndex = 13;
       this.BTN_ExportParametrs.Text = "Экспорт настроек";
       this.BTN_ExportParametrs.UseVisualStyleBackColor = true;
+      this.BTN_ExportParametrs.Click += new System.EventHandler(this.BTN_ExportParametrs_Click);
       // 
       // ProgressBar
       // 
@@ -388,12 +398,49 @@
       this.ProgressBar.Size = new System.Drawing.Size(430, 23);
       this.ProgressBar.TabIndex = 24;
       // 
+      // label8
+      // 
+      this.label8.AutoSize = true;
+      this.label8.Location = new System.Drawing.Point(299, 2);
+      this.label8.Name = "label8";
+      this.label8.Size = new System.Drawing.Size(108, 13);
+      this.label8.TabIndex = 25;
+      this.label8.Text = "Настройки режима:";
+      // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(299, 159);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(108, 13);
+      this.label9.TabIndex = 26;
+      this.label9.Text = "Настройки режима:";
+      // 
+      // LB_FileProperties
+      // 
+      this.LB_FileProperties.FormattingEnabled = true;
+      this.LB_FileProperties.Location = new System.Drawing.Point(190, 106);
+      this.LB_FileProperties.Name = "LB_FileProperties";
+      this.LB_FileProperties.Size = new System.Drawing.Size(242, 108);
+      this.LB_FileProperties.TabIndex = 26;
+      // 
+      // label10
+      // 
+      this.label10.AutoSize = true;
+      this.label10.Location = new System.Drawing.Point(191, 85);
+      this.label10.Name = "label10";
+      this.label10.Size = new System.Drawing.Size(108, 13);
+      this.label10.TabIndex = 27;
+      this.label10.Text = "Свойства настроек:";
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.ClientSize = new System.Drawing.Size(1397, 740);
+      this.Controls.Add(this.label10);
+      this.Controls.Add(this.LB_FileProperties);
       this.Controls.Add(this.ProgressBar);
       this.Controls.Add(this.label7);
       this.Controls.Add(this.label6);
@@ -409,7 +456,6 @@
       this.Controls.Add(this.imageBox2);
       this.Controls.Add(this.imageBox1);
       this.Controls.Add(this.splitContainer1);
-      this.Controls.Add(this.button1);
       this.Controls.Add(this.BTN_StartProcessing);
       this.Margin = new System.Windows.Forms.Padding(2);
       this.Name = "Form1";
@@ -434,7 +480,6 @@
     private System.Windows.Forms.TextBox TB_DataPath;
     private System.Windows.Forms.Button BTN_StartProcessing;
     private System.Windows.Forms.TextBox TB_SavePath;
-    private System.Windows.Forms.Button button1;
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.RadioButton RB_ExistingExperiment;
     private System.Windows.Forms.RadioButton RB_NewExperiment;
@@ -463,6 +508,10 @@
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.Label label7;
     private System.Windows.Forms.ProgressBar ProgressBar;
+    private System.Windows.Forms.Label label8;
+    private System.Windows.Forms.Label label9;
+    private System.Windows.Forms.ListBox LB_FileProperties;
+    private System.Windows.Forms.Label label10;
   }
 }
 

@@ -18,10 +18,28 @@ using ZedGraph;
 
 namespace DiplomaMaster
 {
+  
   public partial class Form1 : Form
   {
+    private StructMainFormParams MainFormParameters;
+    public Image<Gray, Byte> SmallImage
+    {
+      get;
+      private set;
+    }
+    public Image<Bgr, Byte> BigImage
+    {
+      get;
+      private set;
+    }
+
+
+
+    //-------------------------------------------
+    //-------------------------------------------
     public Form1()
     {
+      MainFormParameters = new StructMainFormParams();
       InitializeComponent();
     }
 
@@ -360,12 +378,90 @@ namespace DiplomaMaster
       return res;
     }
 
-    private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+    private void BTN_EditMask_Click(object sender, EventArgs e)
+    {
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
+    }
+
+    private void BTN_LoadMask_Click(object sender, EventArgs e)
     {
 
     }
 
-    private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+    private void BTN_ExportMask_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void BTN_SeeAllMasks_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void CB_RewriteMasks_CheckedChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void CB_OverwriteFiles_CheckedChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void CB_UseCleanFiles_CheckedChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void BTN_ChooseInputFolder_Click(object sender, EventArgs e)
+    {
+      OpenFileDialog Dialog = new OpenFileDialog();
+      if (Directory.Exists(@"C:\Users\Admin\Desktop\Антон"))
+        Dialog.InitialDirectory = @"C:\Users\Admin\Desktop\Антон";
+      else Dialog.InitialDirectory = "C:\\";
+      Dialog.Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
+      Dialog.FilterIndex = 2;
+      Dialog.RestoreDirectory = true;
+
+      string tmp = String.Empty;
+      if (Dialog.ShowDialog() == DialogResult.OK)
+        tmp = new FileInfo(Dialog.FileName).DirectoryName;
+      
+      MainFormParameters.PathToLoadFolder = tmp;
+      }
+    }
+
+    private void BTN_ChooseExportFolder_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void BTN_ImportParametrs_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void BTN_ExportParametrs_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void RB_ExistingExperiment_CheckedChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void RB_NewExperiment_CheckedChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void CB_MaskingMode_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void CB_DenoiseMode_SelectedIndexChanged(object sender, EventArgs e)
     {
 
     }
