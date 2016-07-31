@@ -21,30 +21,109 @@ namespace DiplomaMaster
   
   public partial class Form1 : Form
   {
+    #region private vars
+    private string _input_path = String.Empty;
+    private string _save_path = String.Empty;
+    private Image<Gray, Byte> _SmallImage;
+    private Image<Bgr, Byte> _BigImage;
     private StructMainFormParams MainFormParameters;
+    #endregion
+
+    public static delegate void FormUpdatedHandler(StructMainFormParams newParams);
+    public static event FormUpdatedHandler onFormUpdated;
+
     public Image<Gray, Byte> SmallImage
     {
-      get;
-      private set;
+      get { return _SmallImage; }
+      private set
+      {
+        _SmallImage = value;
+        SmallImageBox.Image = value;
+      }
     }
     public Image<Bgr, Byte> BigImage
     {
-      get;
-      private set;
+      get { return _BigImage; }
+      private set
+      {
+        _BigImage = value;
+        BigImageBox.Image = value;
+      }
+    }  
+    public string input_path
+    {
+      get { return _input_path; }
+      private set
+      {
+        _input_path = value;
+        DrawSampleImage();
+      }
     }
-
-
+    public string save_path
+    {
+      get { return _save_path; }
+      private set
+      {
+        _save_path = value;
+        if (input_path != String.Empty && input_path != null)
+          ControllerUnit.Initialize(input_path, save_path);
+      }
+    }
 
     //-------------------------------------------
     //-------------------------------------------
     public Form1()
     {
-      MainFormParameters = new StructMainFormParams();
       InitializeComponent();
+      
+      MainFormParameters = new StructMainFormParams();
+      FillDenoiseOptions(ControllerUnit.GetListOfDenoiseModes());
+      FillMaskingOptions(ControllerUnit.GetListOfMaskingModes());
+      onFormUpdated += ControllerUnit.FormUpdated(MainFormParameters);
+
     }
 
-    public string input_path;
-    public string save_path;
+    private void FillDenoiseOptions(List<string> Options)
+    {
+      if (Options.Count == 0)
+        throw new Exception("FillDenoiseOptions: список опций пуст");
+      else
+      {
+        foreach (var I in Options)
+          CB_DenoiseMode.Items.Add(I);
+
+        CB_DenoiseMode.SelectedIndex = 0;
+      }
+    }
+
+    private void FillMaskingOptions(List<string> Options)
+    {
+      if (Options.Count == 0)
+        throw new Exception("FillMaskingOptions: список опций пуст");
+      else
+      {
+        foreach (var I in Options)
+          CB_MaskingMode.Items.Add(I);
+
+        CB_MaskingMode.SelectedIndex = 0;
+      }
+    }
+
+    private void DrawSampleImage()
+    {
+      Image<Gray, Byte> tmp = new Image<Gray, byte>(1, 1, new Gray(0));
+      try
+      {
+        tmp = ControllerUnit.GetSampleImage(input_path);
+      }
+      catch (Exception ex) { MessageBox.Show(ex.Message); }
+      if ( tmp == null) MessageBox.Show("DrawSampleImage: не удается отобразить изображение"); 
+
+      SmallImage = tmp;
+    }
+
+
+    //-------------------------
     private void BTN_StartProcessing_Click(object sender, EventArgs e)
     {
       #region Check input path and save path
@@ -385,7 +464,28 @@ namespace DiplomaMaster
 
     private void BTN_LoadMask_Click(object sender, EventArgs e)
     {
+      // Логика открытия файла
 
+      OpenFileDialog Dialog = new OpenFileDialog();
+      if (Directory.Exists(@"C:\Users\Admin\Desktop\Антон"))
+        Dialog.InitialDirectory = @"C:\Users\Admin\Desktop\Антон";
+      else Dialog.InitialDirectory = "C:\\";
+
+      Dialog.Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
+      Dialog.FilterIndex = 2;
+      Dialog.RestoreDirectory = true;
+
+      string tmp = String.Empty;
+      if (Dialog.ShowDialog() == DialogResult.OK)
+        tmp = Dialog.FileName;
+
+
+      
+      //Проверка маски на размеры
+      Image<Gray, Byte> newMask = new Image<Gray,byte>( tmp );
+      if ( ControllerUnit.CheckMaskSize(newMask) ) ControllerUnit.SetMask( newMask);
+        else MessageBox.Show("Изображение содержащее маску имеет неверный размер! Ширина:" 
+          + newMask.Width.ToString() + " Высота:" + newMask.Height.ToString() );      
     }
 
     private void BTN_ExportMask_Click(object sender, EventArgs e)
@@ -428,12 +528,21 @@ namespace DiplomaMaster
         tmp = new FileInfo(Dialog.FileName).DirectoryName;
       
       MainFormParameters.PathToLoadFolder = tmp;
-      }
+      input_path = tmp;
+      TB_DataPath.Text = tmp;
     }
 
     private void BTN_ChooseExportFolder_Click(object sender, EventArgs e)
     {
+      string tmp = String.Empty;
+      DialogResult result = folderBrowserDialog.ShowDialog();
 
+      if ( result == DialogResult.OK)
+        tmp = folderBrowserDialog.SelectedPath;
+
+      MainFormParameters.PathToSaveFolder = tmp;
+      save_path = tmp;
+      TB_SavePath.Text = tmp;
     }
 
     private void BTN_ImportParametrs_Click(object sender, EventArgs e)
@@ -465,5 +574,11 @@ namespace DiplomaMaster
     {
 
     }
+
+    private void Form1_Load(object sender, EventArgs e)
+    {
+
+    }
+
   }
 }
