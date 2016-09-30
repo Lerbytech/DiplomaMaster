@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using Emgu.CV;
 using Emgu.CV.Util;
@@ -12,16 +13,30 @@ using Emgu.Util.TypeEnum;
 
 namespace DiplomaMaster
 {
-  public class CMaskingMaster : IModedImageProcessingMethod<Image<Gray, byte>>
+  public static class CMaskingMaster //: IModedImageProcessingMethod<Image<Gray, byte>>
   {
     public static List<string> GetListOfMethods()
     {
-      throw new NotImplementedException();
+      MethodInfo[] methodInfos = typeof(CMaskingMaster).GetMethods(BindingFlags.NonPublic |
+                                                      BindingFlags.Static);
+
+      Array.Sort(methodInfos,
+        delegate(MethodInfo methodInfo1, MethodInfo methodInfo2)
+        { return methodInfo1.Name.CompareTo(methodInfo2.Name); });
+
+      List<string> output = new List<string>();
+      
+      foreach (MethodInfo methodInfo in methodInfos)
+      {
+        output.Add(methodInfo.Name);
+      }
+      output.RemoveAt(0);
+      return output;
     }
 
     public static void SetMethod(string MethodName)
     {
-      throw new NotImplementedException();
+      //throw new NotImplementedException();
     }
 
     public static Image<Gray, byte> Process(Image<Gray, byte> Input)
@@ -29,7 +44,10 @@ namespace DiplomaMaster
       throw new NotImplementedException();
     }
 
-    public static Image<Gray, Byte> SimpleMask
+    private static Image<Gray, Byte> SimpleMask()
+    {
+      return null;
+    }
 
   }
 }

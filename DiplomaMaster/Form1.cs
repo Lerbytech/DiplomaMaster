@@ -29,8 +29,8 @@ namespace DiplomaMaster
     private StructMainFormParams MainFormParameters;
     #endregion
 
-    public static delegate void FormUpdatedHandler(StructMainFormParams newParams);
-    public static event FormUpdatedHandler onFormUpdated;
+    public delegate void FormUpdatedHandler(StructMainFormParams newParams);
+    public event FormUpdatedHandler onFormUpdated;
 
     public Image<Gray, Byte> SmallImage
     {
@@ -79,7 +79,7 @@ namespace DiplomaMaster
       MainFormParameters = new StructMainFormParams();
       FillDenoiseOptions(ControllerUnit.GetListOfDenoiseModes());
       FillMaskingOptions(ControllerUnit.GetListOfMaskingModes());
-      onFormUpdated += ControllerUnit.FormUpdated(MainFormParameters);
+      //onFormUpdated += ControllerUnit.FormUpdated(MainFormParameters);
 
     }
 
@@ -456,6 +456,9 @@ namespace DiplomaMaster
 
       return res;
     }
+    //---------------------
+
+
 
     private void BTN_EditMask_Click(object sender, EventArgs e)
     {
@@ -483,8 +486,8 @@ namespace DiplomaMaster
       
       //Проверка маски на размеры
       Image<Gray, Byte> newMask = new Image<Gray,byte>( tmp );
-      if ( ControllerUnit.CheckMaskSize(newMask) ) ControllerUnit.SetMask( newMask);
-        else MessageBox.Show("Изображение содержащее маску имеет неверный размер! Ширина:" 
+      if ( !ControllerUnit.CheckMaskSize(newMask) )
+        MessageBox.Show("Изображение содержащее маску имеет неверный размер! Ширина:" 
           + newMask.Width.ToString() + " Высота:" + newMask.Height.ToString() );      
     }
 
@@ -515,6 +518,7 @@ namespace DiplomaMaster
 
     private void BTN_ChooseInputFolder_Click(object sender, EventArgs e)
     {
+      //преднастройка диалога
       OpenFileDialog Dialog = new OpenFileDialog();
       if (Directory.Exists(@"C:\Users\Admin\Desktop\Антон"))
         Dialog.InitialDirectory = @"C:\Users\Admin\Desktop\Антон";
@@ -523,10 +527,12 @@ namespace DiplomaMaster
       Dialog.FilterIndex = 2;
       Dialog.RestoreDirectory = true;
 
+      //название папки
       string tmp = String.Empty;
       if (Dialog.ShowDialog() == DialogResult.OK)
         tmp = new FileInfo(Dialog.FileName).DirectoryName;
       
+      //настраиваем по полученным данным поля
       MainFormParameters.PathToLoadFolder = tmp;
       input_path = tmp;
       TB_DataPath.Text = tmp;
@@ -547,32 +553,32 @@ namespace DiplomaMaster
 
     private void BTN_ImportParametrs_Click(object sender, EventArgs e)
     {
-
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
     private void BTN_ExportParametrs_Click(object sender, EventArgs e)
     {
-
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
     private void RB_ExistingExperiment_CheckedChanged(object sender, EventArgs e)
     {
-
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
     private void RB_NewExperiment_CheckedChanged(object sender, EventArgs e)
     {
-
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
     private void CB_MaskingMode_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+      ControllerUnit.SetMaskingMethod(CB_MaskingMode.SelectedText);
     }
 
     private void CB_DenoiseMode_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+      ControllerUnit.SetDenoisingMethod(CB_DenoiseMode.SelectedText);
     }
 
     private void Form1_Load(object sender, EventArgs e)

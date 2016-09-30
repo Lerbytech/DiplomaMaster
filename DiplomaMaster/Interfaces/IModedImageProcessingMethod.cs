@@ -13,11 +13,11 @@ using Emgu.Util.TypeEnum;
 
 namespace DiplomaMaster
 {
-  public interface IModedImageProcessingMethod<T>
+  public abstract class CAbstractModedImageProcessingMethod<T>
   {
-    List<string> GetListOfMethods();
-    void SetMethod( string MethodName);
+    public  abstract List<string> GetListOfMethods();
+    public abstract void SetMethod(string MethodName);
 
-    //T Process( T Input);
+    public abstract T Process(T Input);
   }
 }

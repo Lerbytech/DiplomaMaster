@@ -21,6 +21,8 @@ namespace DiplomaMaster
     private static NeuronParserMethod neuronParserMethod1;
     private static StructMainFormParams CurrentParams;
 
+    private static Dictionary<int, double> Intenisites;
+
     // Методы
     public static List<string> GetListOfDenoiseModes() { return CDenoiseMaster.GetListOfMethods(); }
     public static List<string> GetListOfMaskingModes() { return CMaskingMaster.GetListOfMethods(); }
@@ -45,20 +47,34 @@ namespace DiplomaMaster
 
       return tmp;
     }
-    
+
+  
     public static void FormUpdated(StructMainFormParams NewParams) 
     {
 
     }
 
-    public static void SetMask(Image<Gray, Byte> newMask) 
+    public static void SetMaskingMethod(string method_name) 
     {
-      
+      CMaskingMaster.SetMethod(method_name);
     }
+
+    public static void SetDenoisingMethod(string method_name) 
+    {
+      CDenoiseMaster.SetMethod(method_name);
+    }
+
     public static bool CheckMaskSize(Image<Gray, Byte> newMask) 
     {
+      SetMask(newMask);
       return false;
     }
+
+    private static void SetMask(Image<Gray, Byte> inputImg)
+    {
+
+    }
+
       
     public static void StartProcessing()
     {
@@ -84,7 +100,8 @@ namespace DiplomaMaster
       Image<Gray, Byte> IMG = CImageProvider.GetImage();
       if (IMG == null) ; //поднять ивент о бяде или конце работы
 
-      Dictionary<int, double> Intenisites = Processor1.ProcessImage(IMG);
+      Intenisites = Processor1.ProcessImage(IMG); // получаем словарь с данными интенсивностей нейронов
+
 
       
       //IMG = DM.Process(IMG);
