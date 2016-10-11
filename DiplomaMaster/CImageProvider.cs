@@ -32,6 +32,7 @@ namespace DiplomaMaster
     private static string FileExtension = ".png";
 
     public static Image<Gray, Byte> IMG;
+    public static System.Drawing.Size ImageSize;
 
     private static int CurrImgIndex;
     //---------------------------------------------------

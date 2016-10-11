@@ -22,23 +22,23 @@ namespace DiplomaMaster
   public partial class Form1 : Form
   {
     #region private vars
-    private string _input_path = String.Empty;
-    private string _save_path = String.Empty;
-    private Image<Gray, Byte> _SmallImage;
     private Image<Bgr, Byte> _BigImage;
+    private Image<Gray, Byte> _MaskImage;
+    private Image<Bgr, Byte> _AugImage;
+
     private StructMainFormParams MainFormParameters;
     #endregion
 
     public delegate void FormUpdatedHandler(StructMainFormParams newParams);
     public event FormUpdatedHandler onFormUpdated;
 
-    public Image<Gray, Byte> SmallImage
+    public Image<Gray, Byte> MaskImage
     {
-      get { return _SmallImage; }
+      get { return _MaskImage; }
       private set
       {
-        _SmallImage = value;
-        SmallImageBox.Image = value;
+        _MaskImage = value;
+        MaskImageBox.Image = value.Resize(MaskImageBox.Width, MaskImageBox.Height, Inter.Nearest);
       }
     }
     public Image<Bgr, Byte> BigImage
@@ -47,26 +47,37 @@ namespace DiplomaMaster
       private set
       {
         _BigImage = value;
-        BigImageBox.Image = value;
+        BigImageBox.Image = value.Resize(BigImageBox.Width, BigImageBox.Height, Inter.Nearest);
       }
-    }  
-    public string input_path
+    }
+    public Image<Bgr, Byte> AugImage
     {
-      get { return _input_path; }
+      get { return _AugImage; }
       private set
       {
-        _input_path = value;
+        _AugImage = value;
+        AugImageBox.Image = value.Resize(AugImageBox.Width, AugImageBox.Height, Inter.Nearest);
+      }
+    }
+
+    public string input_path
+    {
+      get { return MainFormParameters.PathToLoadFolder; }
+      private set
+      {
+        MainFormParameters.PathToLoadFolder = value;
         DrawSampleImage();
       }
     }
     public string save_path
     {
-      get { return _save_path; }
+      get { return MainFormParameters.PathToSaveFolder; }
       private set
       {
-        _save_path = value;
-        if (input_path != String.Empty && input_path != null)
-          ControllerUnit.Initialize(input_path, save_path);
+        MainFormParameters.PathToSaveFolder = value;
+        if (MainFormParameters.PathToSaveFolder != String.Empty && MainFormParameters.PathToSaveFolder != null)
+          ControllerUnit.Initialize(MainFormParameters);
+        else TB_SavePath.Text = String.Empty;
       }
     }
 
@@ -75,43 +86,52 @@ namespace DiplomaMaster
     public Form1()
     {
       InitializeComponent();
-      
-      MainFormParameters = new StructMainFormParams();
-      FillDenoiseOptions(ControllerUnit.GetListOfDenoiseModes());
-      FillMaskingOptions(ControllerUnit.GetListOfMaskingModes());
-      //onFormUpdated += ControllerUnit.FormUpdated(MainFormParameters);
-
     }
 
-    private void FillDenoiseOptions(List<string> Options)
+    private void Form1_Load(object sender, EventArgs e)
     {
-      if (Options.Count == 0)
+      MainFormParameters = new StructMainFormParams();
+      MainFormParameters.MaskingModes = ControllerUnit.GetListOfMaskingModes();
+      MainFormParameters.DenoiseModes = ControllerUnit.GetListOfDenoiseModes();
+
+      FillDenoiseOptions();
+      FillMaskingOptions();
+      //onFormUpdated += ControllerUnit.FormUpdated(MainFormParameters);
+    }
+
+    #region заполнение формы при загрузке
+
+    private void FillDenoiseOptions()
+    {
+      if (MainFormParameters.DenoiseModes.Count == 0)
         throw new Exception("FillDenoiseOptions: список опций пуст");
       else
       {
-        foreach (var I in Options)
+        foreach (var I in MainFormParameters.DenoiseModes)
           CB_DenoiseMode.Items.Add(I);
 
         CB_DenoiseMode.SelectedIndex = 0;
+        MainFormParameters.CurDenoiseMode = 0;
       }
     }
 
-    private void FillMaskingOptions(List<string> Options)
+    private void FillMaskingOptions()
     {
-      if (Options.Count == 0)
+      if (MainFormParameters.MaskingModes.Count == 0)
         throw new Exception("FillMaskingOptions: список опций пуст");
       else
       {
-        foreach (var I in Options)
+        foreach (var I in MainFormParameters.MaskingModes)
           CB_MaskingMode.Items.Add(I);
 
         CB_MaskingMode.SelectedIndex = 0;
+        MainFormParameters.CurMaskingMode = 0;
       }
     }
 
     private void DrawSampleImage()
     {
-      Image<Gray, Byte> tmp = new Image<Gray, byte>(1, 1, new Gray(0));
+      Image<Bgr, Byte> tmp = new Image<Bgr, byte>(1, 1, new Bgr(0,0,0));
       try
       {
         tmp = ControllerUnit.GetSampleImage(input_path);
@@ -119,9 +139,9 @@ namespace DiplomaMaster
       catch (Exception ex) { MessageBox.Show(ex.Message); }
       if ( tmp == null) MessageBox.Show("DrawSampleImage: не удается отобразить изображение"); 
 
-      SmallImage = tmp;
+      BigImage = tmp;
     }
-
+    #endregion
 
     //-------------------------
     private void BTN_StartProcessing_Click(object sender, EventArgs e)
@@ -224,8 +244,9 @@ namespace DiplomaMaster
       #endregion
 
       #region generate bin masks
+     // save_path = @"C:\Users\Admin\Desktop\Антон\EXPERIMENTS\Processed\Processed\2CH_65 part 1";
       
-      TMP = ImgProcTools.BinarizationMethods.BinByDistanceTransform(new Image<Gray, Byte>(save_path + "\\InitMask.png"));
+      TMP = ImgProcTools.BinarizationMethods.BinByDistanceTransform(new Image<Gray, Byte>(save_path + "\\InitMask2.png"));
       
       VectorOfVectorOfPoint AllContours = ImgProcTools.EdgeDetection.SimplestEdgeDetection(TMP);
     
@@ -311,7 +332,7 @@ namespace DiplomaMaster
       
       Image<Gray, Byte> SignalImg = Masks[0].BodyMask.CopyBlank();
       CvInvoke.cvSetImageROI(SignalImg, new Rectangle(5, 5, 172, 130));
-      Image<Gray, Byte> MinImg = Z_Projections.ZP_Min(IMGS);
+      Image<Gray, Byte> MinImg = Z_Projections.ZP_Avg(IMGS);
       //Image<Gray, Byte> MinImg = new Image<Gray, byte>(@"C:\Users\Админ\Desktop\НИР\EXPERIMENTS\Separated\M-Movie013\Z-Project Gray\MIN_M-Movie0013.tif");
       
       try
@@ -324,6 +345,7 @@ namespace DiplomaMaster
          
       }
       catch (Exception ex) { }
+
       List<List<double>> Intensities = new List<List<double>>();
       for (int i = 0; i < Masks.Count; i++)
       {
@@ -458,7 +480,7 @@ namespace DiplomaMaster
     }
     //---------------------
 
-
+    #region Кнопки
 
     private void BTN_EditMask_Click(object sender, EventArgs e)
     {
@@ -482,38 +504,59 @@ namespace DiplomaMaster
       if (Dialog.ShowDialog() == DialogResult.OK)
         tmp = Dialog.FileName;
 
+      // проверяем что выбрали
+      int res = ControllerUnit.TestMask(tmp);
 
-      
-      //Проверка маски на размеры
-      Image<Gray, Byte> newMask = new Image<Gray,byte>( tmp );
-      if ( !ControllerUnit.CheckMaskSize(newMask) )
-        MessageBox.Show("Изображение содержащее маску имеет неверный размер! Ширина:" 
-          + newMask.Width.ToString() + " Высота:" + newMask.Height.ToString() );      
+      switch (res)
+      {
+        case 0: MessageBox.Show("ERROR! Функция загрузки маски вернула null!"); break;
+        case 1: MessageBox.Show("Изображение содержащее маску имеет неверный размер!"); break;
+        case 2: MaskImage = ControllerUnit.GetMask(); break;
+      }
     }
 
     private void BTN_ExportMask_Click(object sender, EventArgs e)
     {
-
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
     private void BTN_SeeAllMasks_Click(object sender, EventArgs e)
     {
-
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
-    private void CB_RewriteMasks_CheckedChanged(object sender, EventArgs e)
+    private void BTN_ChooseExportFolder_Click(object sender, EventArgs e)
     {
+      string tmp = String.Empty;
+      DialogResult result = folderBrowserDialog.ShowDialog();
 
+      if (result == DialogResult.OK)
+        tmp = folderBrowserDialog.SelectedPath;
+
+      //MainFormParameters.PathToSaveFolder = tmp;
+      save_path = tmp;
+      TB_SavePath.Text = tmp;
     }
 
-    private void CB_OverwriteFiles_CheckedChanged(object sender, EventArgs e)
+    private void BTN_ImportParametrs_Click(object sender, EventArgs e)
     {
-
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
-    private void CB_UseCleanFiles_CheckedChanged(object sender, EventArgs e)
+    private void BTN_ExportParametrs_Click(object sender, EventArgs e)
     {
+      SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+      saveFileDialog1.Filter = ".txt";
+      saveFileDialog1.Title = "Save parameters to file";
+      saveFileDialog1.ShowDialog();
 
+      if (saveFileDialog1.FileName != "")
+      {
+
+        ControllerUnit.Export(MainFormParameters, saveFileDialog1.FileName);
+      }
+
+      MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
     private void BTN_ChooseInputFolder_Click(object sender, EventArgs e)
@@ -531,42 +574,27 @@ namespace DiplomaMaster
       string tmp = String.Empty;
       if (Dialog.ShowDialog() == DialogResult.OK)
         tmp = new FileInfo(Dialog.FileName).DirectoryName;
-      
+
       //настраиваем по полученным данным поля
-      MainFormParameters.PathToLoadFolder = tmp;
+      //MainFormParameters.PathToLoadFolder = tmp;
       input_path = tmp;
       TB_DataPath.Text = tmp;
     }
+    #endregion
 
-    private void BTN_ChooseExportFolder_Click(object sender, EventArgs e)
-    {
-      string tmp = String.Empty;
-      DialogResult result = folderBrowserDialog.ShowDialog();
+    #region чекбоксы
 
-      if ( result == DialogResult.OK)
-        tmp = folderBrowserDialog.SelectedPath;
-
-      MainFormParameters.PathToSaveFolder = tmp;
-      save_path = tmp;
-      TB_SavePath.Text = tmp;
-    }
-
-    private void BTN_ImportParametrs_Click(object sender, EventArgs e)
+    private void CB_RewriteMasks_CheckedChanged(object sender, EventArgs e)
     {
       MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
-    private void BTN_ExportParametrs_Click(object sender, EventArgs e)
+    private void CB_OverwriteFiles_CheckedChanged(object sender, EventArgs e)
     {
       MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
 
-    private void RB_ExistingExperiment_CheckedChanged(object sender, EventArgs e)
-    {
-      MessageBox.Show("NOT IMPLEMENTED YET!!");
-    }
-
-    private void RB_NewExperiment_CheckedChanged(object sender, EventArgs e)
+    private void CB_UseCleanFiles_CheckedChanged(object sender, EventArgs e)
     {
       MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
@@ -581,10 +609,9 @@ namespace DiplomaMaster
       ControllerUnit.SetDenoisingMethod(CB_DenoiseMode.SelectedText);
     }
 
-    private void Form1_Load(object sender, EventArgs e)
-    {
+    #endregion
 
-    }
+
 
   }
 }

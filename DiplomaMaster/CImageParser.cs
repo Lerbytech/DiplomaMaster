@@ -21,6 +21,8 @@ namespace DiplomaMaster
     private DenoisingMethod _denoisingMethod;
     private NeuronParserMethod _neuronParserMethod;
     private Image<Gray, Byte> tmpImage;
+    private Image<Gray, Byte> Mask;
+
     //Методы
     public CImageParser(Dictionary<string, object> Parameters, 
                         DenoisingMethod denoiseMethod,
@@ -38,7 +40,16 @@ namespace DiplomaMaster
       _neuronParserMethod = parsingMethod;
     }
 
-    
+    public Image<Gray, Byte> GetMask()
+    {
+      return Mask;
+    }
+
+    public void SetMask(Image<Gray, Byte> input)
+    {
+      Mask = input;
+    }
+
     public Dictionary<int, double> ProcessImage(Image<Gray, byte> inputIMG)
     {
       Dictionary<int, double> res = new Dictionary<int, double>();

@@ -27,27 +27,28 @@ namespace DiplomaMaster
     public static List<string> GetListOfDenoiseModes() { return CDenoiseMaster.GetListOfMethods(); }
     public static List<string> GetListOfMaskingModes() { return CMaskingMaster.GetListOfMethods(); }
     
-    public static void Initialize(string ImportPath, string ExportPath) 
+    //
+
+    public static void Initialize(StructMainFormParams Params)
     {
       //Processor1 = new CImageParser(,,);
     }
 
     // Переделать чтобы считывалось через ImageProvider
-    public static Image<Gray, Byte> GetSampleImage(string path)
+    public static Image<Bgr, Byte> GetSampleImage(string path)
     {
       string[] files = Directory.GetFiles(path);
       if (files.Length == 0) throw new Exception("GetSampleImage: input_path некорректен либо в папке не содержится файлов");
 
-      Image<Gray, Byte> tmp = new Image<Gray, byte>(1, 1, new Gray(0));
+      Image<Bgr, Byte> tmp = new Image<Bgr, byte>(1, 1, new Bgr(0, 0, 0));
       try
       {
-        tmp = new Image<Gray, byte>(files[0]);
+        tmp = new Image<Bgr, byte>(files[0]);
       }
       catch (Exception) { return null; }
 
       return tmp;
     }
-
   
     public static void FormUpdated(StructMainFormParams NewParams) 
     {
@@ -64,18 +65,46 @@ namespace DiplomaMaster
       CDenoiseMaster.SetMethod(method_name);
     }
 
-    public static bool CheckMaskSize(Image<Gray, Byte> newMask) 
+    #region masks
+
+    public static int TestMask(string path)
     {
-      SetMask(newMask);
-      return false;
+      Image<Gray, Byte> Mask;
+      try {
+        Mask = new Image<Gray, byte>(path);
+      }
+      catch (Exception ex) { return 0; }
+
+      if (Mask == null) return 0;
+      if (!isMaskSizeGood(Mask)) return 1;
+      else
+      {
+        SetMask(Mask);
+        return 2;
+      }
+
+    }
+
+    private static bool isMaskSizeGood(Image<Gray, Byte> newMask)
+    {
+      System.Drawing.Size s = CImageProvider.ImageSize;
+      if (s != newMask.Size)
+        return false;
+      else return true;
     }
 
     private static void SetMask(Image<Gray, Byte> inputImg)
     {
-
+      Processor1.SetMask(inputImg);
     }
 
-      
+    public static Image<Gray, Byte> GetMask()
+    {
+      return Processor1.GetMask();
+    }
+
+    #endregion
+   
     public static void StartProcessing()
     {
 
@@ -111,6 +140,41 @@ namespace DiplomaMaster
       ///Dictionary<int, double> Intenisites = Parser.ProcessImage(IMG);
 
     //  NeuronProvider.AddValues(Intenisites);
+    }
+
+    public void Export(StructMainFormParams P, string path)
+    {
+
+      StreamWriter sw = new StreamWriter(path);
+      sw.WriteLine("Путь к папке загрузки:" + P.PathToLoadFolder.ToString());
+      sw.WriteLine("Путь к папке сохранения:" + P.PathToSaveFolder.ToString());
+      sw.WriteLine("Перезаписывать файлы? " + P.doOverwriteFiles.ToString());
+      sw.WriteLine("Использовать \"чистые\" файлы? " + P.doUseCleanFiles.ToString());
+      sw.WriteLine("Перерасчитывать маски? " + P.doRecalculateMasks.ToString());
+      sw.WriteLine("Частота перерасчета: " + P.RecalculationRate.ToString());
+      
+      sw.WriteLine("Режимы шумоподавления:");
+      foreach (var I in P.DenoiseModes) sw.WriteLine(">" + I.ToString());
+      sw.WriteLine("Выбранный режим: " + P.CurDenoiseMode.ToString());
+
+      sw.WriteLine("Режимы наложения масок: ");
+      foreach( var I in P.MaskingModes) sw.WriteLine(">" + I.ToString());
+      sw.WriteLine("Выбранный режим: " + P.CurMaskingMode.ToString());
+    }
+
+    public StructMainFormParams Import(string path)
+    {
+      List<string> s = File.ReadAllLines(path).ToList();
+      StructMainFormParams res = new StructMainFormParams();
+      
+
+      for (int i = 0; i < s.Count; i++)
+      {
+
+
+      }
+
+
     }
   }
 }

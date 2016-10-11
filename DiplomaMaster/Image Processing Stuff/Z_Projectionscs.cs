@@ -55,5 +55,34 @@ namespace DiplomaMaster
       return result;
     }
 
+    public static Image<Gray, Byte> ZP_Avg(List<Image<Gray, Byte>> input)
+    {
+      Image<Gray, Int32> result = input[0].Convert<Gray, Int32>().Clone();
+      int width = result.Cols;
+      int height = result.Rows;
+      int[, ,] data;
+      int[, ,] res_data = result.Data;
+      foreach (var Img in input)
+      {
+        data = Img.Convert<Gray, Int32>().Data;
+        for (int x = 0; x < width; x++)
+          for (int y = 0; y < height; y++)
+          {
+            //if (res_data[y, x, 0] < data[y, x, 0]) res_data[y, x, 0] = data[y, x, 0];
+            res_data[y, x, 0] += (int)data[y, x, 0];
+          }
+      }
+
+      for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++)
+        {
+          //if (res_data[y, x, 0] < data[y, x, 0]) res_data[y, x, 0] = data[y, x, 0];
+          res_data[y, x, 0] /= input.Count;
+        }
+
+      return result.Convert<Gray, Byte>();
+    }
+
+
   }
 }

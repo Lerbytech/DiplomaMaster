@@ -5,17 +5,10 @@ using System.Text;
 
 namespace DiplomaMaster
 {
-  public enum MainFormMode
-  {
-    NewExperiment,
-    ExistingExperiment
-  };
-
   public struct StructMainFormParams
   {
     //private MainFormMode _workmode = MainFormMode.NewExperiment;
 
-    public MainFormMode WorkMode;
       /*
     {
       public get
@@ -50,7 +43,6 @@ namespace DiplomaMaster
 
     public void SetDefaultParams()
     {
-      WorkMode = MainFormMode.NewExperiment;
       PathToLoadFolder = String.Empty;
       PathToSaveFolder = String.Empty;
       doOverwriteFiles = true;
