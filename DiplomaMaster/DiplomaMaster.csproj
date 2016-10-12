@@ -63,6 +63,7 @@
     <Compile Include="CImageProvider.cs" />
     <Compile Include="CMaskingMaster.cs" />
     <Compile Include="ControllerUnit.cs" />
+    <Compile Include="Denoising Methods\CDenoise_SigmaReject2.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +71,8 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Image Processing Stuff\ImgProcTools.cs" />
+    <Compile Include="Interfaces\IDenoiseStrategy.cs" />
+    <Compile Include="Interfaces\IMaskingStrategy.cs" />
     <Compile Include="Interfaces\IModedImageProcessingMethod.cs" />
     <Compile Include="Image Processing Stuff\NeuronBodyMask.cs" />
     <Compile Include="Image Processing Stuff\NeuronSeparation.cs" />
@@ -98,6 +101,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Masking Methods\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

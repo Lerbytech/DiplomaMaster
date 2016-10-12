@@ -31,7 +31,12 @@ namespace DiplomaMaster
 
     public static void Initialize(StructMainFormParams Params)
     {
-      //Processor1 = new CImageParser(,,);
+      CImageProvider.InitImageProvider(Params.PathToLoadFolder);
+
+      SetMaskingMethod(Params.MaskingModes[Params.CurMaskingMode]);
+      SetDenoisingMethod(Params.DenoiseModes[Params.CurMaskingMode]);
+
+      //Processor1 = new CImageParser(,,);x
     }
 
     // Переделать чтобы считывалось через ImageProvider
@@ -144,7 +149,6 @@ namespace DiplomaMaster
 
     public void Export(StructMainFormParams P, string path)
     {
-
       StreamWriter sw = new StreamWriter(path);
       sw.WriteLine("Путь к папке загрузки:" + P.PathToLoadFolder.ToString());
       sw.WriteLine("Путь к папке сохранения:" + P.PathToSaveFolder.ToString());
@@ -173,7 +177,7 @@ namespace DiplomaMaster
 
 
       }
-
+      return null;
 
     }
   }

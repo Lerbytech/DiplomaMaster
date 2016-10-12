@@ -553,7 +553,7 @@ namespace DiplomaMaster
       if (saveFileDialog1.FileName != "")
       {
 
-        ControllerUnit.Export(MainFormParameters, saveFileDialog1.FileName);
+        //ControllerUnit.Export(MainFormParameters, saveFileDialog1.FileName);
       }
 
       MessageBox.Show("NOT IMPLEMENTED YET!!");

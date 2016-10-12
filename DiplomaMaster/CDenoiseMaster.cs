@@ -15,6 +15,8 @@ namespace DiplomaMaster
 {
   public static class CDenoiseMaster //: IModedImageProcessingMethod<Image<Gray, Byte>>
   {
+
+
     public static List<string> GetListOfMethods()
     {
       MethodInfo[] methodInfos = typeof(CDenoiseMaster).GetMethods(BindingFlags.NonPublic |

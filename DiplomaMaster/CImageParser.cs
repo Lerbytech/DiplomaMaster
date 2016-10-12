@@ -18,8 +18,6 @@ namespace DiplomaMaster
   public class CImageParser
   {
     //Поля
-    private DenoisingMethod _denoisingMethod;
-    private NeuronParserMethod _neuronParserMethod;
     private Image<Gray, Byte> tmpImage;
     private Image<Gray, Byte> Mask;
 
@@ -36,8 +34,8 @@ namespace DiplomaMaster
       ImgProcTools.Denoise.PrepareDenoiseFunctions(tmpIMG.Width, tmpIMG.Height);
 
       //------------------
-      _denoisingMethod = denoiseMethod;
-      _neuronParserMethod = parsingMethod;
+      //_denoisingMethod = denoiseMethod;
+      //_neuronParserMethod = parsingMethod;
     }
 
     public Image<Gray, Byte> GetMask()
@@ -53,7 +51,8 @@ namespace DiplomaMaster
     public Dictionary<int, double> ProcessImage(Image<Gray, byte> inputIMG)
     {
       Dictionary<int, double> res = new Dictionary<int, double>();
-      tmpImage = _denoisingMethod.Invoke(inputIMG);
+      tmpImage = CMaskingMaster.Process(inputIMG);
+
 
       
 

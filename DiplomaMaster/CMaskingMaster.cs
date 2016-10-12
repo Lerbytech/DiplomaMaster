@@ -15,6 +15,9 @@ namespace DiplomaMaster
 {
   public static class CMaskingMaster //: IModedImageProcessingMethod<Image<Gray, byte>>
   {
+    private static IMaskingStrategy maskingStrategy = null;
+
+
     public static List<string> GetListOfMethods()
     {
       MethodInfo[] methodInfos = typeof(CMaskingMaster).GetMethods(BindingFlags.NonPublic |
@@ -36,7 +39,7 @@ namespace DiplomaMaster
 
     public static void SetMethod(string MethodName)
     {
-      //throw new NotImplementedException();
+      //maskingStrategy = 
     }
 
     public static Image<Gray, byte> Process(Image<Gray, byte> Input)
@@ -44,7 +47,7 @@ namespace DiplomaMaster
       throw new NotImplementedException();
     }
 
-    private static Image<Gray, Byte> SimpleMask()
+    private static Image<Gray, Byte> LoadedMask()
     {
       return null;
     }
