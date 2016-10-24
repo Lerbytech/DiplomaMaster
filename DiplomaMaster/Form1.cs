@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
@@ -12,8 +9,6 @@ using Emgu.CV;
 using Emgu.CV.Util;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-using Emgu.Util;
-using Emgu.Util.TypeEnum;
 using ZedGraph;
 
 namespace DiplomaMaster
@@ -150,6 +145,9 @@ namespace DiplomaMaster
     //-------------------------
     private void BTN_StartProcessing_Click(object sender, EventArgs e)
     {
+      ControllerUnit.Initialize(MainFormParameters);
+      ControllerUnit.StartProcessing();
+
       #region Check input path and save path
 
       bool is_all_paths_correct = true;

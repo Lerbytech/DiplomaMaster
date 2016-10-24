@@ -29,6 +29,9 @@ namespace DiplomaMaster
       return strategyNames;
     }
 
+    //Функция для парсинга человеческого названия метода из названия класса
+    // Отбрасывает префикс, растаскивает сначала по заглавным буквам, потом по цифрам
+    // Пример: CDenoise_SigmaReject2 -> SigmaReject2 -> [] = { Sigma, Reject2} -> Sigma Reject2 -> [] = { Sigma Reject, 2} -> Sigma Reject 2
     private static string ParseMethodNameFromClassName(string className, string classNamePrefix)
     {
       string tmp;
@@ -53,6 +56,5 @@ namespace DiplomaMaster
       tmp = tmp.TrimEnd(new char[] { ' ' });
       return tmp;
     }
-
   }
 }

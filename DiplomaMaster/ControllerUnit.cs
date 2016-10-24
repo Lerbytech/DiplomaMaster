@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 
 using Emgu.CV;
-using Emgu.CV.Util;
-using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-using Emgu.Util;
-using Emgu.Util.TypeEnum;
 
 namespace DiplomaMaster
 {
@@ -127,7 +122,10 @@ namespace DiplomaMaster
    
     public  void StartProcessing()
     {
+      int N = CImageProvider.TotalNumberOfImages;
 
+      for (int i = 0; i < N; i++)
+        Loop();
     }
 
     public  void PauseProcessing()
@@ -149,14 +147,10 @@ namespace DiplomaMaster
       Image<Gray, Byte> IMG = CImageProvider.GetImage();
       if (IMG == null) ; //поднять ивент о бяде или конце работы
 
-      Intenisites = ImageParser.ProcessImage(IMG); // получаем словарь с данными интенсивностей нейронов      
-      //IMG = DM.Process(IMG);
+      IMG = DenoiseMaster.Process(IMG);
+      Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
       
-      //CImageParser Parser = new CImageParser();
-      //Parser.SetMode(CMaskingMaster.mode());
-      ///Dictionary<int, double> Intenisites = Parser.ProcessImage(IMG);
-
-    //  NeuronProvider.AddValues(Intenisites);
+      //NeuronProvider.AddValues(Intenisites);
     }
 
     public  void Export(StructMainFormParams P, string path)

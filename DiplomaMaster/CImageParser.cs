@@ -1,23 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Reflection;
 
 using Emgu.CV;
-using Emgu.CV.Util;
-using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-using Emgu.Util;
-using Emgu.Util.TypeEnum;
 
 namespace DiplomaMaster
 {
-  /*
-  public delegate Image<Gray, Byte> DenoisingMethod(Image<Gray, Byte> Img);
-  public delegate List<Image<Gray, Byte>> NeuronParserMethod(Image<Gray, Byte> Img);
-  */
 
   public class CImageParser : IImageParsingStrategy
   {
@@ -29,28 +19,15 @@ namespace DiplomaMaster
 
     public CImageParser()
     {
-      //Хитрый способ получить название классов через reflection
-
-      string DenoiseMethodsNamespace = "DiplomaMaster.DenoisingMethods";
-
-      //получим список всех классов в этом namespace
-      var q = from t in Assembly.GetExecutingAssembly().GetTypes()
-              where t.Namespace == DenoiseMethodsNamespace && t.IsClass
-              select t;
-      //немного костыль - кастуем var в словарь, который нам так и так нужен
-      strategyNames = new Dictionary<string, string>();
-      q.ToList().ForEach(t => strategyNames.Add(t.Name, ParseMethodNameFromClassName(t.Name)));
-
+      strategyNames = CReflectionTools.GetStrategyNamesFromNamespace("DiplomaMaster.ImageParsingMethods", "CImageParsing_");
     }
 
-    //Методы
-    public Dictionary<int, double> ProcessImage(Image<Gray, byte> inputIMG)
-    { 
-      Dictionary<int, double> res = new Dictionary<int, double>();
-      
-      //res =  parse method(tmpImage);
+    //подготовка к работе - 1)разбиения маски на подмаски. 2) вызов методов подготовки отдельных классов
+    //
 
-      return res;
+    public void PrepareParsing(Image<Gray, Byte> inputMask)
+    {
+
     }
 
     public void PrepareImageParsingMethod(Image<Gray, byte> Mask)
