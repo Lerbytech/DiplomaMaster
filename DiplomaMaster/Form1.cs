@@ -27,6 +27,8 @@ namespace DiplomaMaster
     private Image<Bgr, Byte> _AugImage;
 
     private StructMainFormParams MainFormParameters;
+    private CControllerUnit ControllerUnit;
+
     #endregion
 
     public delegate void FormUpdatedHandler(StructMainFormParams newParams);
@@ -91,11 +93,13 @@ namespace DiplomaMaster
     private void Form1_Load(object sender, EventArgs e)
     {
       MainFormParameters = new StructMainFormParams();
+      ControllerUnit = new CControllerUnit();
       MainFormParameters.MaskingModes = ControllerUnit.GetListOfMaskingModes();
       MainFormParameters.DenoiseModes = ControllerUnit.GetListOfDenoiseModes();
 
-      FillDenoiseOptions();
       FillMaskingOptions();
+      FillDenoiseOptions();
+      
       //onFormUpdated += ControllerUnit.FormUpdated(MainFormParameters);
     }
 
@@ -192,9 +196,8 @@ namespace DiplomaMaster
       // Read all input images and sort them
       List<Image<Gray, Byte>> RawImages = GetImages(GetFiles(input_path));
       for (int i = 0; i < RawImages.Count; i++) RawImages[i].Save(save_path + @"\Raw\" + i.ToString() + ".png");
-
       
-        #region Z-Projections
+      #region Z-Projections
         //Find Z-Projections
         Image<Gray, Byte> ZP_MinImg = Z_Projections.ZP_Min(RawImages);
         Image<Gray, Byte> ZP_MaxImg = Z_Projections.ZP_Max(RawImages);
@@ -601,12 +604,13 @@ namespace DiplomaMaster
 
     private void CB_MaskingMode_SelectedIndexChanged(object sender, EventArgs e)
     {
-      ControllerUnit.SetMaskingMethod(CB_MaskingMode.SelectedText);
+      
+      ControllerUnit.SetMaskingMethod(CB_MaskingMode.SelectedItem.ToString());
     }
 
     private void CB_DenoiseMode_SelectedIndexChanged(object sender, EventArgs e)
     {
-      ControllerUnit.SetDenoisingMethod(CB_DenoiseMode.SelectedText);
+      ControllerUnit.SetDenoisingMethod(CB_DenoiseMode.SelectedItem.ToString());
     }
 
     #endregion

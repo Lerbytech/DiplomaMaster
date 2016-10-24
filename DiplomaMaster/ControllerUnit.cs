@@ -13,34 +13,48 @@ using Emgu.Util.TypeEnum;
 
 namespace DiplomaMaster
 {
-  public static class ControllerUnit
+  public class CControllerUnit
   {
     // Поля
-    private static CImageParser Processor1;
-    private static DenoisingMethod denoisingMethod1;
-    private static NeuronParserMethod neuronParserMethod1;
-    private static StructMainFormParams CurrentParams;
-
-    private static Dictionary<int, double> Intenisites;
-
-    // Методы
-    public static List<string> GetListOfDenoiseModes() { return CDenoiseMaster.GetListOfMethods(); }
-    public static List<string> GetListOfMaskingModes() { return CMaskingMaster.GetListOfMethods(); }
+    private CImageParser ImageParser;
+    private CMaskingMaster MaskingMaster;
+    private CDenoiseMaster DenoiseMaster;
+      
+    private StructMainFormParams CurrentParams;
+    private Dictionary<int, double> Intenisites;
     
-    //
 
-    public static void Initialize(StructMainFormParams Params)
+
+    public CControllerUnit()
+    {
+      ImageParser = new CImageParser();
+      DenoiseMaster = new CDenoiseMaster();
+      MaskingMaster = new CMaskingMaster();
+    }
+
+    #region функции для общения с формой
+    public List<string> GetListOfDenoiseModes()
+    {
+      return DenoiseMaster.GetListOfMethods();
+    }
+
+    public List<string> GetListOfMaskingModes()
+    {
+      return MaskingMaster.GetListOfMethods();
+    }
+
+    #endregion
+
+    public void Initialize(StructMainFormParams Params)
     {
       CImageProvider.InitImageProvider(Params.PathToLoadFolder);
 
-      SetMaskingMethod(Params.MaskingModes[Params.CurMaskingMode]);
-      SetDenoisingMethod(Params.DenoiseModes[Params.CurMaskingMode]);
-
-      //Processor1 = new CImageParser(,,);x
+      //SetMaskingMethod(Params.MaskingModes[Params.CurMaskingMode]);
+      //SetDenoisingMethod(Params.DenoiseModes[Params.CurMaskingMode]);
     }
 
     // Переделать чтобы считывалось через ImageProvider
-    public static Image<Bgr, Byte> GetSampleImage(string path)
+    public Image<Bgr, Byte> GetSampleImage(string path)
     {
       string[] files = Directory.GetFiles(path);
       if (files.Length == 0) throw new Exception("GetSampleImage: input_path некорректен либо в папке не содержится файлов");
@@ -55,24 +69,24 @@ namespace DiplomaMaster
       return tmp;
     }
   
-    public static void FormUpdated(StructMainFormParams NewParams) 
+    public void FormUpdated(StructMainFormParams NewParams) 
     {
 
     }
 
-    public static void SetMaskingMethod(string method_name) 
+    public void SetMaskingMethod(string method_name) 
     {
-      CMaskingMaster.SetMethod(method_name);
+      MaskingMaster.SetMethod(method_name);
     }
 
-    public static void SetDenoisingMethod(string method_name) 
+    public void SetDenoisingMethod(string method_name) 
     {
-      CDenoiseMaster.SetMethod(method_name);
+      DenoiseMaster.SetMethod(method_name);
     }
 
     #region masks
 
-    public static int TestMask(string path)
+    public  int TestMask(string path)
     {
       Image<Gray, Byte> Mask;
       try {
@@ -81,16 +95,16 @@ namespace DiplomaMaster
       catch (Exception ex) { return 0; }
 
       if (Mask == null) return 0;
-      if (!isMaskSizeGood(Mask)) return 1;
-      else
-      {
+   if (!isMaskSizeGood(Mask)) return 1;
+   else
+   {
         SetMask(Mask);
         return 2;
       }
 
     }
 
-    private static bool isMaskSizeGood(Image<Gray, Byte> newMask)
+    private  bool isMaskSizeGood(Image<Gray, Byte> newMask)
     {
       System.Drawing.Size s = CImageProvider.ImageSize;
       if (s != newMask.Size)
@@ -98,46 +112,44 @@ namespace DiplomaMaster
       else return true;
     }
 
-    private static void SetMask(Image<Gray, Byte> inputImg)
+    private  void SetMask(Image<Gray, Byte> inputImg)
     {
-      Processor1.SetMask(inputImg);
+      //ImageParser.SetMask(inputImg);
     }
 
-    public static Image<Gray, Byte> GetMask()
+    public  Image<Gray, Byte> GetMask()
     {
-      return Processor1.GetMask();
+      //return ImageParser.GetMask();
+      return null;
     }
 
     #endregion
    
-    public static void StartProcessing()
+    public  void StartProcessing()
     {
 
     }
 
-    public static void PauseProcessing()
+    public  void PauseProcessing()
     {
     }
 
-    public static void KillProcessing()
-    {
-
-    }
-
-    public static void AdjustProcessing()
+    public  void KillProcessing()
     {
 
     }
 
-    private static void Loop()
+    public  void AdjustProcessing()
+    {
+
+    }
+
+    private  void Loop()
     {
       Image<Gray, Byte> IMG = CImageProvider.GetImage();
       if (IMG == null) ; //поднять ивент о бяде или конце работы
 
-      Intenisites = Processor1.ProcessImage(IMG); // получаем словарь с данными интенсивностей нейронов
-
-
-      
+      Intenisites = ImageParser.ProcessImage(IMG); // получаем словарь с данными интенсивностей нейронов      
       //IMG = DM.Process(IMG);
       
       //CImageParser Parser = new CImageParser();
@@ -147,7 +159,7 @@ namespace DiplomaMaster
     //  NeuronProvider.AddValues(Intenisites);
     }
 
-    public void Export(StructMainFormParams P, string path)
+    public  void Export(StructMainFormParams P, string path)
     {
       StreamWriter sw = new StreamWriter(path);
       sw.WriteLine("Путь к папке загрузки:" + P.PathToLoadFolder.ToString());
@@ -166,7 +178,7 @@ namespace DiplomaMaster
       sw.WriteLine("Выбранный режим: " + P.CurMaskingMode.ToString());
     }
 
-    public StructMainFormParams Import(string path)
+    public  StructMainFormParams Import(string path)
     {
       List<string> s = File.ReadAllLines(path).ToList();
       StructMainFormParams res = new StructMainFormParams();
@@ -177,8 +189,7 @@ namespace DiplomaMaster
 
 
       }
-      return null;
-
+      return new StructMainFormParams();
     }
   }
 }

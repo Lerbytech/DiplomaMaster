@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Text.RegularExpressions;
+
 
 using Emgu.CV;
 using Emgu.CV.Util;
@@ -13,44 +15,86 @@ using Emgu.Util.TypeEnum;
 
 namespace DiplomaMaster
 {
-  public static class CMaskingMaster //: IModedImageProcessingMethod<Image<Gray, byte>>
+  public class CMaskingMaster 
   {
-    private static IMaskingStrategy maskingStrategy = null;
+    private IMaskingStrategy strategy = null;
+    Dictionary<string, string> strategyNames = new Dictionary<string, string>();
 
-
-    public static List<string> GetListOfMethods()
+    public CMaskingMaster()
     {
-      MethodInfo[] methodInfos = typeof(CMaskingMaster).GetMethods(BindingFlags.NonPublic |
-                                                      BindingFlags.Static);
+      strategyNames = CReflectionTools.GetStrategyNamesFromNamespace("DiplomaMaster.MaskingMethods", "CMasking_");
+      /*
+      //Хитрый способ получить название классов через reflection
+      string DenoiseMethodsNamespace = "DiplomaMaster.MaskingMethods";
 
-      Array.Sort(methodInfos,
-        delegate(MethodInfo methodInfo1, MethodInfo methodInfo2)
-        { return methodInfo1.Name.CompareTo(methodInfo2.Name); });
+      //получим список всех классов в этом namespace
+      var q = from t in Assembly.GetExecutingAssembly().GetTypes()
+              where t.Namespace == DenoiseMethodsNamespace && t.IsClass
+              select t;
+      //немного костыль - кастуем var в словарь, который нам так и так нужен
+      strategyNames = new Dictionary<string, string>();
+      q.ToList().ForEach(t => strategyNames.Add(t.Name, ParseMethodNameFromClassName(t.Name)));
+      */
+    }
 
-      List<string> output = new List<string>();
-      
-      foreach (MethodInfo methodInfo in methodInfos)
+
+    public List<string> GetListOfMethods()
+    {
+      return strategyNames.Keys.ToList();
+    }
+
+    public  void SetMethod(string MethodName)
+    {
+      if (!strategyNames.ContainsKey(MethodName))
+        throw new Exception("SetMethod: method name incorrect!");
+      else
       {
-        output.Add(methodInfo.Name);
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        Type type = assembly.GetTypes()
+            .First(t => t.Name == strategyNames[MethodName]);
+        strategy = (IMaskingStrategy)Activator.CreateInstance(type);
       }
-      output.RemoveAt(0);
-      return output;
+
+
     }
 
-    public static void SetMethod(string MethodName)
-    {
-      //maskingStrategy = 
-    }
-
-    public static Image<Gray, byte> Process(Image<Gray, byte> Input)
+    public  Image<Gray, byte> Process(Image<Gray, byte> Input)
     {
       throw new NotImplementedException();
     }
 
-    private static Image<Gray, Byte> LoadedMask()
+    private  Image<Gray, Byte> LoadedMask()
     {
       return null;
     }
+
+    //преобразуем имена - разбиваем по заглавным буквам и отдеяем цифры в отдельные слова
+    //CDenoise_SigmaReject2 превращается в Sigma Reject 2
+    private string ParseMethodNameFromClassName(string className)
+    {
+      string tmp;
+      string[] SplitCamelCaseString;
+
+      tmp = className;
+      tmp = tmp.Replace("CMasking_", String.Empty);
+
+      //разбиваем по заглавным буквам
+      SplitCamelCaseString = Regex.Split(tmp, @"(?<!^)(?=[A-Z])");
+      tmp = String.Empty;
+      for (int i = 0; i < SplitCamelCaseString.Length; i++)
+        tmp += SplitCamelCaseString[i] + " ";
+      tmp = tmp.TrimEnd(new char[] { ' ' });
+
+      //разбиваем по цифрам
+      SplitCamelCaseString = Regex.Split(tmp, @"(?<=[a-zA-Z])(?=\d)");
+
+      tmp = String.Empty;
+      for (int i = 0; i < SplitCamelCaseString.Length; i++)
+        tmp += SplitCamelCaseString[i] + " ";
+      tmp = tmp.TrimEnd(new char[] { ' ' });
+      return tmp;
+    }
+
 
   }
 }

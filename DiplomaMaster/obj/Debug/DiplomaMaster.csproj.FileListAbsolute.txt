@@ -26,3 +26,5 @@ D:\Ilya\GitHub\DiplomaMaster\DiplomaMaster\obj\Debug\DiplomaMaster.csprojResolve
 D:\Ilya\GitHub\DiplomaMaster\DiplomaMaster\obj\Debug\DiplomaMaster.Form1.resources
 D:\Ilya\GitHub\DiplomaMaster\DiplomaMaster\obj\Debug\DiplomaMaster.Properties.Resources.resources
 D:\Ilya\GitHub\DiplomaMaster\DiplomaMaster\obj\Debug\DiplomaMaster.csproj.GenerateResource.Cache
+C:\Users\Админ\Documents\Visual Studio 2012\Projects\DiplomaMaster\DiplomaMaster\bin\Debug\Microsoft.VisualBasic.PowerPacks.Vs.dll
+C:\Users\Админ\Documents\Visual Studio 2012\Projects\DiplomaMaster\DiplomaMaster\bin\Debug\ru\Microsoft.VisualBasic.PowerPacks.Vs.resources.dll

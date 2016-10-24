@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using Emgu.CV;
 using Emgu.CV.Util;
@@ -13,43 +14,54 @@ using Emgu.Util.TypeEnum;
 
 namespace DiplomaMaster
 {
-  public static class CDenoiseMaster //: IModedImageProcessingMethod<Image<Gray, Byte>>
+  public class CDenoiseMaster
   {
+    private IDenoiseStrategy strategy = null;
+    Dictionary<string, string> strategyNames = new Dictionary<string, string>();
 
-
-    public static List<string> GetListOfMethods()
+    public CDenoiseMaster()
     {
-      MethodInfo[] methodInfos = typeof(CDenoiseMaster).GetMethods(BindingFlags.NonPublic |
-                                                      BindingFlags.Static);
-
-      Array.Sort(methodInfos,
-        delegate(MethodInfo methodInfo1, MethodInfo methodInfo2)
-        { return methodInfo1.Name.CompareTo(methodInfo2.Name); });
-
-      List<string> output = new List<string>();
-      foreach (MethodInfo methodInfo in methodInfos)
-      {
-        output.Add(methodInfo.Name);
-      }
-      output.RemoveAt(0);
-
-      return output;
+      //Хитрый способ получить название классов через reflection
+      strategyNames = CReflectionTools.GetStrategyNamesFromNamespace("DiplomaMaster.DenoisingMethods", "CDenoise_");
     }
 
-    public static void SetMethod(string MethodName)
+    public List<string> GetListOfMethods()
     {
-      //throw new NotImplementedException();
+        return strategyNames.Keys.ToList();
     }
 
-    public static Image<Gray, byte> Process(Image<Gray, byte> Input)
+    public void SetMethod(string MethodName)
     {
-      throw new NotImplementedException();
+        if (!strategyNames.ContainsKey(MethodName))
+            throw new Exception("SetMethod: method name incorrect!");
+        else
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Type type = assembly.GetTypes()
+                .First(t => t.Name == strategyNames[MethodName]);
+            strategy = (IDenoiseStrategy)Activator.CreateInstance(type);
+        }
+            
+        //switch (MethodName)
+        //{
+        //    case "Sigma Reject 2":
+        //        {
+        //            strategy = new DenoisingMethos.CDenoise_SigmaReject2();
+        //            break;
+        //        }
+        //}
     }
 
-    private static Image<Gray, Byte> SimpleDenoise()
+    public Image<Gray, byte> Process(Image<Gray, byte> Input)
     {
-      return null;
+        return  strategy.DenoiseImage(Input);
+        //throw new NotImplementedException();
     }
 
-  }
+    private  Image<Gray, Byte> SimpleDenoise()
+    {
+        return null;
+    }
+
+    }
 }
