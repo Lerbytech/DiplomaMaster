@@ -63,6 +63,7 @@ namespace DiplomaMaster
       private set
       {
         MainFormParameters.PathToLoadFolder = value;
+        ControllerUnit.Initialize(MainFormParameters);
         DrawSampleImage();
       }
     }
@@ -71,9 +72,11 @@ namespace DiplomaMaster
       get { return MainFormParameters.PathToSaveFolder; }
       private set
       {
-        MainFormParameters.PathToSaveFolder = value;
         if (MainFormParameters.PathToSaveFolder != String.Empty && MainFormParameters.PathToSaveFolder != null)
-          ControllerUnit.Initialize(MainFormParameters);
+        {
+          MainFormParameters.PathToSaveFolder = value;
+          //ControllerUnit.Initialize(MainFormParameters);
+        }
         else TB_SavePath.Text = String.Empty;
       }
     }
@@ -302,7 +305,7 @@ namespace DiplomaMaster
       try
       {
         
-        List<List<double>> Intensities = GetiIntensities(Images, NBM);
+        List<List<double>> Intensities = GetIntensities(Images, NBM);
         SaveIntensities(Intensities, save_path + @"\Neurons Data\Images\");
         //PlotGraphics(Intensities, save_path + @"\Plots\Images\");
 
@@ -311,7 +314,7 @@ namespace DiplomaMaster
         SaveIntensities(Intensities, save_path + @"\Neurons Data\AvgImages\");
         //PlotGraphics(Intensities, save_path + @"\Plots\AvgImages\");
         //
-        Intensities = GetiIntensities(RawImages, NBM);
+        Intensities = GetIntensities(RawImages, NBM);
         SaveIntensities(Intensities, save_path + @"\Neurons Data\RawImages\");
 //        PlotGraphics(Intensities, save_path + @"\Plots\RawImages\");
 
@@ -328,7 +331,7 @@ namespace DiplomaMaster
       
     }
 
-    public List<List<double>> GetiIntensities(List<Image<Gray, Byte>> IMGS, List<NeuronBodyMask> Masks)
+    public List<List<double>> GetIntensities(List<Image<Gray, Byte>> IMGS, List<NeuronBodyMask> Masks)
     { 
       
       Image<Gray, Byte> SignalImg = Masks[0].BodyMask.CopyBlank();
@@ -585,24 +588,42 @@ namespace DiplomaMaster
 
     #region чекбоксы
 
-    private void CB_RewriteMasks_CheckedChanged(object sender, EventArgs e)
+    private void CB_RecalcMasks_CheckedChanged(object sender, EventArgs e)
     {
-      MessageBox.Show("NOT IMPLEMENTED YET!!");
+      if (CB_RecalcMasks.Checked)
+      {
+        TB_RecalcMasksRate.Enabled = true;
+        MainFormParameters.RecalculationRate = -1;
+      }
+      else
+      {
+        TB_RecalcMasksRate.Text = String.Empty;
+        TB_RecalcMasksRate.Enabled = false;
+        MainFormParameters.RecalculationRate = -1;
+      }
     }
 
     private void CB_OverwriteFiles_CheckedChanged(object sender, EventArgs e)
     {
-      MessageBox.Show("NOT IMPLEMENTED YET!!");
+      if (CB_OverwriteFiles.Checked)
+        MainFormParameters.doOverwriteFiles = true;
+      else MainFormParameters.doOverwriteFiles = false;
     }
 
     private void CB_UseCleanFiles_CheckedChanged(object sender, EventArgs e)
     {
-      MessageBox.Show("NOT IMPLEMENTED YET!!");
+
+      if (CB_UseCleanFiles.Checked)
+        MainFormParameters.doUseCleanFiles = true;
+      else MainFormParameters.doUseCleanFiles = false;
     }
+    #endregion
+
+    #region Селекторы
+   
 
     private void CB_MaskingMode_SelectedIndexChanged(object sender, EventArgs e)
     {
-      
       ControllerUnit.SetMaskingMethod(CB_MaskingMode.SelectedItem.ToString());
     }
 
@@ -610,8 +631,21 @@ namespace DiplomaMaster
     {
       ControllerUnit.SetDenoisingMethod(CB_DenoiseMode.SelectedItem.ToString());
     }
-
     #endregion
+
+    private void TB_RecalcMasksRate_TextChanged(object sender, EventArgs e)
+    {
+      int val = 0;
+      if (Int32.TryParse(TB_RecalcMasksRate.Text, out val))
+        MainFormParameters.RecalculationRate = val;
+      else
+      {
+        TB_RecalcMasksRate.Text = String.Empty;
+        MainFormParameters.RecalculationRate = -1;
+      }
+
+    }
+
 
 
 

@@ -79,6 +79,7 @@
     <Compile Include="Image Processing Stuff\NeuronBodyMask.cs" />
     <Compile Include="Image Processing Stuff\NeuronSeparation.cs" />
     <Compile Include="Masking Methods\CMasking_SimpleMask.cs" />
+    <Compile Include="Parsing Methods\CImageParsing_Class1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StructMainFormParams.cs" />
@@ -105,9 +106,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Parsing Methods\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

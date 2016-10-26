@@ -32,6 +32,7 @@ namespace DiplomaMaster
     private static string FileExtension = ".png";
 
     public static Image<Gray, Byte> IMG;
+
     public static System.Drawing.Size ImageSize;
 
     private static int CurrImgIndex;
@@ -39,11 +40,15 @@ namespace DiplomaMaster
     //---------------------------------------------------
 
 
-    public static void InitImageProvider(string inputDir)
+    public static void InitImageProvider(StructMainFormParams Params)
     {
+      string inputDir;
+      if (Params.doUseCleanFiles)
+        throw new Exception("Not implemented yet!");
+      else inputDir = Params.PathToLoadFolder;
+
       if (!Directory.Exists(inputDir))
         throw new Exception("InitImageProvider: input directory not exists");
-
       
       // считать файлы из диска
       FullPathsToFiles = GetFiles(inputDir);
@@ -82,12 +87,21 @@ namespace DiplomaMaster
       }
       else
       {
-        CurrImgIndex = 0;
+        //CurrImgIndex = 0;
         IMG = null;
       }
 
       return IMG;
 
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public static Image<Bgr, Byte> GetSampleImage()
+    {
+      return GetImage(10).Convert<Bgr, Byte>(); 
     }
 
     /// <summary>

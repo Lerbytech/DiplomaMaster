@@ -17,8 +17,6 @@ namespace DiplomaMaster
       
     private StructMainFormParams CurrentParams;
     private Dictionary<int, double> Intenisites;
-    
-
 
     public CControllerUnit()
     {
@@ -42,15 +40,18 @@ namespace DiplomaMaster
 
     public void Initialize(StructMainFormParams Params)
     {
-      CImageProvider.InitImageProvider(Params.PathToLoadFolder);
+      CImageProvider.InitImageProvider(Params);
 
-      //SetMaskingMethod(Params.MaskingModes[Params.CurMaskingMode]);
-      //SetDenoisingMethod(Params.DenoiseModes[Params.CurMaskingMode]);
+      MaskingMaster.SetMethod(Params.MaskingModes[Params.CurMaskingMode]);
+      DenoiseMaster.SetMethod(Params.DenoiseModes[Params.CurDenoiseMode]);
     }
 
     // Переделать чтобы считывалось через ImageProvider
     public Image<Bgr, Byte> GetSampleImage(string path)
     {
+      if (CImageProvider.TotalNumberOfImages != 0)
+        return CImageProvider.GetSampleImage();
+
       string[] files = Directory.GetFiles(path);
       if (files.Length == 0) throw new Exception("GetSampleImage: input_path некорректен либо в папке не содержится файлов");
 
@@ -149,7 +150,6 @@ namespace DiplomaMaster
 
       IMG = DenoiseMaster.Process(IMG);
       Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
-      
       //NeuronProvider.AddValues(Intenisites);
     }
 

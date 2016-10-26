@@ -53,8 +53,8 @@
       this.BTN_SeeAllMasks = new System.Windows.Forms.Button();
       this.CB_UseCleanFiles = new System.Windows.Forms.CheckBox();
       this.BTN_EditMask = new System.Windows.Forms.Button();
-      this.CB_RewriteMasks = new System.Windows.Forms.CheckBox();
-      this.textBox1 = new System.Windows.Forms.TextBox();
+      this.CB_RecalcMasks = new System.Windows.Forms.CheckBox();
+      this.TB_RecalcMasksRate = new System.Windows.Forms.TextBox();
       this.label6 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
       this.ProgressBar = new System.Windows.Forms.ProgressBar();
@@ -245,7 +245,7 @@
       this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
       this.tableLayoutPanel1.ColumnCount = 2;
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 292F));
-      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 412F));
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 416F));
       this.tableLayoutPanel1.Controls.Add(this.label8, 1, 0);
       this.tableLayoutPanel1.Controls.Add(this.label9, 1, 2);
       this.tableLayoutPanel1.Controls.Add(this.CB_MaskingMode, 0, 3);
@@ -331,23 +331,25 @@
       this.BTN_EditMask.UseVisualStyleBackColor = true;
       this.BTN_EditMask.Click += new System.EventHandler(this.BTN_EditMask_Click);
       // 
-      // CB_RewriteMasks
+      // CB_RecalcMasks
       // 
-      this.CB_RewriteMasks.AutoSize = true;
-      this.CB_RewriteMasks.Location = new System.Drawing.Point(1209, 277);
-      this.CB_RewriteMasks.Name = "CB_RewriteMasks";
-      this.CB_RewriteMasks.Size = new System.Drawing.Size(140, 17);
-      this.CB_RewriteMasks.TabIndex = 20;
-      this.CB_RewriteMasks.Text = "Пересчитывать маски";
-      this.CB_RewriteMasks.UseVisualStyleBackColor = true;
-      this.CB_RewriteMasks.CheckedChanged += new System.EventHandler(this.CB_RewriteMasks_CheckedChanged);
+      this.CB_RecalcMasks.AutoSize = true;
+      this.CB_RecalcMasks.Location = new System.Drawing.Point(1209, 277);
+      this.CB_RecalcMasks.Name = "CB_RecalcMasks";
+      this.CB_RecalcMasks.Size = new System.Drawing.Size(140, 17);
+      this.CB_RecalcMasks.TabIndex = 20;
+      this.CB_RecalcMasks.Text = "Пересчитывать маски";
+      this.CB_RecalcMasks.UseVisualStyleBackColor = true;
+      this.CB_RecalcMasks.CheckedChanged += new System.EventHandler(this.CB_RecalcMasks_CheckedChanged);
       // 
-      // textBox1
+      // TB_RecalcMasksRate
       // 
-      this.textBox1.Location = new System.Drawing.Point(1236, 314);
-      this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(100, 20);
-      this.textBox1.TabIndex = 21;
+      this.TB_RecalcMasksRate.Enabled = false;
+      this.TB_RecalcMasksRate.Location = new System.Drawing.Point(1236, 314);
+      this.TB_RecalcMasksRate.Name = "TB_RecalcMasksRate";
+      this.TB_RecalcMasksRate.Size = new System.Drawing.Size(100, 20);
+      this.TB_RecalcMasksRate.TabIndex = 21;
+      this.TB_RecalcMasksRate.TextChanged += new System.EventHandler(this.TB_RecalcMasksRate_TextChanged);
       // 
       // label6
       // 
@@ -454,8 +456,8 @@
       this.Controls.Add(this.ProgressBar);
       this.Controls.Add(this.label7);
       this.Controls.Add(this.label6);
-      this.Controls.Add(this.textBox1);
-      this.Controls.Add(this.CB_RewriteMasks);
+      this.Controls.Add(this.TB_RecalcMasksRate);
+      this.Controls.Add(this.CB_RecalcMasks);
       this.Controls.Add(this.BTN_EditMask);
       this.Controls.Add(this.CB_UseCleanFiles);
       this.Controls.Add(this.BTN_SeeAllMasks);
@@ -509,8 +511,8 @@
     private System.Windows.Forms.Button BTN_SeeAllMasks;
     private System.Windows.Forms.CheckBox CB_UseCleanFiles;
     private System.Windows.Forms.Button BTN_EditMask;
-    private System.Windows.Forms.CheckBox CB_RewriteMasks;
-    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.CheckBox CB_RecalcMasks;
+    private System.Windows.Forms.TextBox TB_RecalcMasksRate;
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.Label label7;
     private System.Windows.Forms.ProgressBar ProgressBar;

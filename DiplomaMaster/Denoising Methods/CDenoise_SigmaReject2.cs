@@ -12,7 +12,6 @@ namespace DiplomaMaster.DenoisingMethods
         Image<Gray, byte> IDenoiseStrategy.DenoiseImage(Image<Gray, byte> input)
         {
             return ImgProcTools.Denoise.SigmaReject2(input);
-            //throw new NotImplementedException();
         }
 
         void IDenoiseStrategy.PrepareDenoiseMethod(Image<Gray, byte> input)
