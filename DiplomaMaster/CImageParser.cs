@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -20,10 +21,30 @@ namespace DiplomaMaster
     public CImageParser()
     {
       strategyNames = CReflectionTools.GetStrategyNamesFromNamespace("DiplomaMaster.ImageParsingMethods", "CImageParsing_");
+      if ( strategyNames.Count == 0)
+        throw new Exception("ERROR: No parsing strategies found!");
+      
+      //костыль
+      SetMethod(strategyNames.Keys.ToList()[0]);
+    
     }
 
     //подготовка к работе - 1)разбиения маски на подмаски. 2) вызов методов подготовки отдельных классов
     //
+
+    //Метод    private так как это внутренняя субрутина
+    private void SetMethod(string MethodName)
+    {
+      if (!strategyNames.ContainsKey(MethodName))
+        throw new Exception("SetMethod: method name incorrect!");
+      else
+      {
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        Type type = assembly.GetTypes()
+            .First(t => t.Name == strategyNames[MethodName]);
+        strategy = (IImageParsingStrategy)Activator.CreateInstance(type);
+      }
+    }
 
     public void PrepareParsing(Image<Gray, Byte> inputMask)
     {

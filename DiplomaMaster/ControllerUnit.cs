@@ -126,7 +126,9 @@ namespace DiplomaMaster
       int N = CImageProvider.TotalNumberOfImages;
 
       for (int i = 0; i < N; i++)
+      {
         Loop();
+      }
     }
 
     public  void PauseProcessing()

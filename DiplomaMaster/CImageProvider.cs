@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Drawing;
 
 using Emgu.CV;
 using Emgu.CV.Util;
@@ -29,7 +30,7 @@ namespace DiplomaMaster
     }
 
     private static string[] FullPathsToFiles;
-    private static string FileExtension = ".png";
+    private static string FileExtension = ".Png";
 
     public static Image<Gray, Byte> IMG;
 
@@ -38,7 +39,6 @@ namespace DiplomaMaster
     private static int CurrImgIndex;
     //---------------------------------------------------
     //---------------------------------------------------
-
 
     public static void InitImageProvider(StructMainFormParams Params)
     {
@@ -49,11 +49,14 @@ namespace DiplomaMaster
 
       if (!Directory.Exists(inputDir))
         throw new Exception("InitImageProvider: input directory not exists");
-      
+
       // считать файлы из диска
       FullPathsToFiles = GetFiles(inputDir);
 
-      // отсортировать 
+      //Проверить имена полученных файлов
+      CheckFiles(FullPathsToFiles);
+
+      // отсортировать и проверить на ошибки полученные имена файлов
       OrderFiles(FullPathsToFiles);
 
       CurrImgIndex = 0;
@@ -111,13 +114,8 @@ namespace DiplomaMaster
     /// <returns>Неупорядоченный массив с полными путями к файлам</returns>
     private static string []GetFiles(string DirectoryPath)
     {
-      string[] FileEntries = Directory.GetFiles(DirectoryPath, FileExtension);
 
-      // Проверки файлов
-      
-      // 1 - проверка на размеры изображений - они должны быть равны
-      // TODO!
-
+      string[] FileEntries = Directory.EnumerateFiles(DirectoryPath).ToArray();
 
       PathToDirectory = DirectoryPath;
       TotalNumberOfImages = FileEntries.Length;
@@ -125,17 +123,37 @@ namespace DiplomaMaster
     }
 
     /// <summary>
-    /// Упорядочивает файлы, так как GetFiles возвращает неверный порядок
+    /// Упорядочивает файлы, так как GetFiles возвращает неверный порядок.
+    /// Проверяет на предмет ошибок в названиях (разные стили названий, 
     /// 
     /// </summary>
     /// <param name="FileEntries"></param>
     private static void OrderFiles(string[] FileEntries)
     {
+      SortedDictionary<int, List<string>> LineLengthsDict = new SortedDictionary<int, List<string>>();
+
+      int L = 0;
+      for (int i = 0; i < FileEntries.Length; i++)
+      {
+        L = FileEntries[i].Length;
+        if (!LineLengthsDict.ContainsKey(L))
+          LineLengthsDict.Add(L, new List<string>());
+
+        LineLengthsDict[L].Add(FileEntries[i]);
+      }
+
+      List<string> res = new List<string>();
+
+      foreach (var I in LineLengthsDict)
+        res.AddRange(I.Value);
+
+      
+
       List<List<string>> Data = new List<List<string>>();
 
-      int L = PathToDirectory.Length + FileExtension.Length;
+      L = PathToDirectory.Length + FileExtension.Length;
 
-      for (int i = 0; i < FileExtension.Length; i++)
+      for (int i = 0; i < FileEntries.Length; i++)
       {
         if (FileEntries[i].Length > Data.Count + L)
         {
@@ -150,5 +168,55 @@ namespace DiplomaMaster
 
       FullPathsToFiles = Final.ToArray();
     }
+
+    private static bool CheckFiles(string[] DirtyFileNames)
+    {
+      bool isOk = true;
+
+      //проверка на однородность стиля названий
+      /*
+      for (int i = 0; i < DirtyFileNames.Length; i++)
+      {
+        if ( !DirtyFileNames[i].Substring(PathToDirectory.Length).Contains('_'))
+          return false;
+      }
+        */
+      //проверка на однородность расширений
+      for (int i = 0; i < DirtyFileNames.Length; i++)
+      {
+        if (!DirtyFileNames[i].Contains(FileExtension))
+          return false;
+      }
+
+      //проверка на равенство размеров
+      
+      int Width_0 = 0;
+      int Height_0 = 0;
+      const int wOff = 16;  // нужные поля для быстрого метода поиска размера изображения
+      const int hOff = 20;
+      byte[] buff = new byte[32];
+
+      var d = File.OpenRead(DirtyFileNames[0]); // считываем для 0 изображения
+      d.Read(buff, 0, 32);
+
+      int W = BitConverter.ToInt32(new[] { buff[wOff + 3], buff[wOff + 2], buff[wOff + 1], buff[wOff + 0], }, 0);
+      int H = BitConverter.ToInt32(new[] { buff[hOff + 3], buff[hOff + 2], buff[hOff + 1], buff[hOff + 0], }, 0);
+
+      Width_0 = W;
+      Height_0 = H;
+      for (int i = 0; i < DirtyFileNames.Length; i++)
+      {
+        d = File.OpenRead(DirtyFileNames[i]); // считываем для 0 изображения
+        d.Read(buff, 0, 32);
+        W = BitConverter.ToInt32(new[] { buff[wOff + 3], buff[wOff + 2], buff[wOff + 1], buff[wOff + 0], }, 0);
+        H = BitConverter.ToInt32(new[] { buff[hOff + 3], buff[hOff + 2], buff[hOff + 1], buff[hOff + 0], }, 0);
+
+        if (W != Width_0 || H != Height_0)
+          return false;
+      }
+   
+      return true;
+    }
+
   }
 }
