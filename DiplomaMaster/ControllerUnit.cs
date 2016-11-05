@@ -11,7 +11,7 @@ namespace DiplomaMaster
   public class CControllerUnit
   {
     // Поля
-    private CImageParser ImageParser;
+    private CImageParserMaster ImageParser;
     private CMaskingMaster MaskingMaster;
     private CDenoiseMaster DenoiseMaster;
       
@@ -20,7 +20,7 @@ namespace DiplomaMaster
 
     public CControllerUnit()
     {
-      ImageParser = new CImageParser();
+      ImageParser = new CImageParserMaster();
       DenoiseMaster = new CDenoiseMaster();
       MaskingMaster = new CMaskingMaster();
     }

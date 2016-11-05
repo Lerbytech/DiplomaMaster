@@ -7,29 +7,6 @@ namespace DiplomaMaster
 {
   public struct StructMainFormParams
   {
-    //private MainFormMode _workmode = MainFormMode.NewExperiment;
-
-      /*
-    {
-      public get
-      {
-        return _workmode;
-      }
-      public set
-      {
-        if (value == MainFormMode.NewExperiment)
-        {
-          doOverwriteFiles = true;
-          doUseCleanFiles = false;
-        }
-        else
-        {
-          doOverwriteFiles = false;
-          doUseCleanFiles = true;
-        }
-        _workmode = value;
-      }
-    }*/
     public string PathToLoadFolder;
     public string PathToSaveFolder;
     public bool doOverwriteFiles;

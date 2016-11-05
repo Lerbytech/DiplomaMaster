@@ -10,7 +10,7 @@ using Emgu.CV.Structure;
 namespace DiplomaMaster
 {
 
-  public class CImageParser : IImageParsingStrategy
+  public class CImageParserMaster : IImageParsingStrategy
   {
     private Image<Gray, Byte> oldMask;
     private Image<Gray, Byte> []Masks;
@@ -18,7 +18,7 @@ namespace DiplomaMaster
     private IImageParsingStrategy strategy = null;
     Dictionary<string, string> strategyNames = new Dictionary<string, string>();
 
-    public CImageParser()
+    public CImageParserMaster()
     {
       strategyNames = CReflectionTools.GetStrategyNamesFromNamespace("DiplomaMaster.ImageParsingMethods", "CImageParsing_");
       if ( strategyNames.Count == 0)
@@ -28,11 +28,12 @@ namespace DiplomaMaster
       SetMethod(strategyNames.Keys.ToList()[0]);
     
     }
+    public List<string> GetListOfMethods()
+    {
+      return strategyNames.Values.ToList();
+    }
 
-    //подготовка к работе - 1)разбиения маски на подмаски. 2) вызов методов подготовки отдельных классов
-    //
-
-    //Метод    private так как это внутренняя субрутина
+    //Метод private так как это внутренняя субрутина
     private void SetMethod(string MethodName)
     {
       if (!strategyNames.ContainsKey(MethodName))
@@ -46,11 +47,6 @@ namespace DiplomaMaster
       }
     }
 
-    public void PrepareParsing(Image<Gray, Byte> inputMask)
-    {
-
-    }
-
     public void PrepareImageParsingMethod(Image<Gray, byte> Mask)
     {
       throw new NotImplementedException();
@@ -61,10 +57,7 @@ namespace DiplomaMaster
       throw new NotImplementedException();
     }
 
-    public List<string> GetListOfMethods()
-    {
-      return strategyNames.Values.ToList();
-    }
+    
 
     private string ParseMethodNameFromClassName(string className)
     {
