@@ -51,7 +51,7 @@ namespace DiplomaMaster
       MaskingMaster.SetMethod(Params.MaskingModes[Params.CurMaskingMode]);
       DenoiseMaster.SetMethod(Params.DenoiseModes[Params.CurDenoiseMode], curImage);
       NeuronProvider.PrepareExport(Params);
-
+    
     }
 
     // Переделать чтобы считывалось через ImageProvider
@@ -136,11 +136,12 @@ namespace DiplomaMaster
       curImage = CImageProvider.GetImage(0);
       maskImage = MaskingMaster.Process(curImage);
       ImageParser.PrepareImageParsingMethod(maskImage);
-
+      
       for (int i = 0; i < N; i++)
       {
         Loop();
       }
+      NeuronProvider.FinishSaving();
     }
 
     public  void PauseProcessing()
