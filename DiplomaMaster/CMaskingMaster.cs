@@ -17,15 +17,19 @@ namespace DiplomaMaster
 {
   public class CMaskingMaster 
   {
-    private IMaskingStrategy strategy = null;
-    Dictionary<string, string> strategyNames = new Dictionary<string, string>();
+    private IMaskingStrategy strategy;
+    Dictionary<string, string> strategyNames;
 
     private Image<Gray, Byte> MaskImage;
-    private List<NeuronBodyMask> NeuronBodyMasks;
+    private List<NeuronBodyMask> NeuronBodyMasks; 
+    
 
 
     public CMaskingMaster()
     {
+      strategy = null;
+      strategyNames = new Dictionary<string, string>();
+
       strategyNames = CReflectionTools.GetStrategyNamesFromNamespace("DiplomaMaster.MaskingMethods", "CMasking_");
 
       MaskImage = new Image<Gray, byte>(1, 1, new Gray(0));

@@ -63,7 +63,7 @@ namespace DiplomaMaster
       private set
       {
         MainFormParameters.PathToLoadFolder = value;
-        ControllerUnit.Initialize(MainFormParameters);
+        //ControllerUnit.Initialize(MainFormParameters);
         DrawSampleImage();
       }
     }

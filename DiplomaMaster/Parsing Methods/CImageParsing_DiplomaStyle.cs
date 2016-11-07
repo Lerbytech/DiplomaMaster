@@ -49,7 +49,6 @@ namespace DiplomaMaster.ImageParsingMethods
           res.Add(i, CvInvoke.Sum(SignalImg).V0);
         }
         catch (Exception ex) { }
-
       }
 
       return res;

@@ -8,15 +8,16 @@ using Emgu.CV.Structure;
 namespace DiplomaMaster.DenoisingMethods
 {
     public class CDenoise_SigmaReject2 : IDenoiseStrategy
-    {
-        Image<Gray, byte> IDenoiseStrategy.DenoiseImage(Image<Gray, byte> input)
-        {
-            return ImgProcTools.Denoise.SigmaReject2(input);
-        }
+    {      
+      Image<Gray, byte> IDenoiseStrategy.DenoiseImage(Image<Gray, byte> input)
+      {
+          return ImgProcTools.Denoise.SigmaReject2(input);
+      }
 
-        void IDenoiseStrategy.PrepareDenoiseMethod(Image<Gray, byte> input)
-        {
-            ImgProcTools.Denoise.PrepareDenoiseFunctions(input.Width, input.Height);
-        }
+      void IDenoiseStrategy.PrepareDenoiseMethod(Image<Gray, byte> input)
+      {
+        if (input == null) return;
+          ImgProcTools.Denoise.PrepareDenoiseFunctions(input.Width, input.Height);
+      }
     }
 }

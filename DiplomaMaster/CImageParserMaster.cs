@@ -49,15 +49,15 @@ namespace DiplomaMaster
 
     public void PrepareImageParsingMethod(Image<Gray, byte> Mask)
     {
-      throw new NotImplementedException();
+      strategy.PrepareImageParsingMethod(Mask);
     }
 
     public Dictionary<int, double> ApplyMask(Image<Gray, byte> newImage)
     {
-      throw new NotImplementedException();
-    }
+      return strategy.ApplyMask(newImage);
 
-    
+      //throw new NotImplementedException();
+    }
 
     private string ParseMethodNameFromClassName(string className)
     {

@@ -59,7 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CDenoiseMaster.cs" />
-    <Compile Include="CImageParser.cs" />
+    <Compile Include="CImageParserMaster.cs" />
+    <Compile Include="CNeuronProvider.cs" />
+    <Compile Include="Masking Methods\CMasking_DiplomaMask.cs" />
+    <Compile Include="Parsing Methods\CImageParsing_DiplomaStyle.cs" />
     <Compile Include="CImageProvider.cs" />
     <Compile Include="CMaskingMaster.cs" />
     <Compile Include="ControllerUnit.cs" />
@@ -78,8 +81,6 @@
     <Compile Include="Interfaces\IModedImageProcessingMethod.cs" />
     <Compile Include="Image Processing Stuff\NeuronBodyMask.cs" />
     <Compile Include="Image Processing Stuff\NeuronSeparation.cs" />
-    <Compile Include="Masking Methods\CMasking_SimpleMask.cs" />
-    <Compile Include="Parsing Methods\CImageParsing_Class1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StructMainFormParams.cs" />

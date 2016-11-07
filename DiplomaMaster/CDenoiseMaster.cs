@@ -10,11 +10,12 @@ namespace DiplomaMaster
 {
   public class CDenoiseMaster
   {
-    private IDenoiseStrategy strategy = null;
-    Dictionary<string, string> strategyNames = new Dictionary<string, string>();
+    private IDenoiseStrategy strategy;
+    Dictionary<string, string> strategyNames;
 
     public CDenoiseMaster()
     {
+      strategy = null;
       strategyNames = CReflectionTools.GetStrategyNamesFromNamespace("DiplomaMaster.DenoisingMethods", "CDenoise_");
     }
 
@@ -24,7 +25,7 @@ namespace DiplomaMaster
         return strategyNames.Keys.ToList();
     }
 
-    public void SetMethod(string MethodName)
+    public void SetMethod(string MethodName, Image<Gray,Byte> sample_img)
     {
         if (!strategyNames.ContainsKey(MethodName))
             throw new Exception("SetMethod: method name incorrect!");
@@ -34,12 +35,15 @@ namespace DiplomaMaster
             Type type = assembly.GetTypes()
                 .First(t => t.Name == strategyNames[MethodName]);
             strategy = (IDenoiseStrategy)Activator.CreateInstance(type);
+
+            strategy.PrepareDenoiseMethod(sample_img);
         }
     }
 
     public Image<Gray, byte> Process(Image<Gray, byte> Input)
-    {
-        return  strategy.DenoiseImage(Input);
+    {      
+      return  strategy.DenoiseImage(Input);
+        
     }
   }
 }

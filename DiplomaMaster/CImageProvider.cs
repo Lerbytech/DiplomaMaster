@@ -50,12 +50,14 @@ namespace DiplomaMaster
       if (!Directory.Exists(inputDir))
         throw new Exception("InitImageProvider: input directory not exists");
 
-      // считать файлы из диска
+      //считать файлы из диска
       FullPathsToFiles = GetFiles(inputDir);
 
       //Проверить имена полученных файлов
-      CheckFiles(FullPathsToFiles);
-
+      /*
+      if (!CheckFiles(FullPathsToFiles))
+        throw new Exception("InitImageProvider: check files found error");
+        */
       // отсортировать и проверить на ошибки полученные имена файлов
       OrderFiles(FullPathsToFiles);
 
@@ -95,7 +97,6 @@ namespace DiplomaMaster
       }
 
       return IMG;
-
     }
 
     /// <summary>
@@ -114,7 +115,6 @@ namespace DiplomaMaster
     /// <returns>Неупорядоченный массив с полными путями к файлам</returns>
     private static string []GetFiles(string DirectoryPath)
     {
-
       string[] FileEntries = Directory.EnumerateFiles(DirectoryPath).ToArray();
 
       PathToDirectory = DirectoryPath;
@@ -146,9 +146,9 @@ namespace DiplomaMaster
 
       foreach (var I in LineLengthsDict)
         res.AddRange(I.Value);
-
+      FullPathsToFiles = res.ToArray();
       
-
+       /*
       List<List<string>> Data = new List<List<string>>();
 
       L = PathToDirectory.Length + FileExtension.Length;
@@ -165,8 +165,8 @@ namespace DiplomaMaster
       List<string> Final = new List<string>();
       foreach (var I in Data)
         Final.AddRange(I);
-
-      FullPathsToFiles = Final.ToArray();
+         */
+      //FullPathsToFiles = Final.ToArray();
     }
 
     private static bool CheckFiles(string[] DirtyFileNames)

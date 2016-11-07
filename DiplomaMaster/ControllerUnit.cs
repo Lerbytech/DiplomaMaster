@@ -6,7 +6,7 @@ using System.IO;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
-namespace DiplomaMaster
+namespace DiplomaMaster                                                                                                                                                                                                                  
 {
   public class CControllerUnit
   {
@@ -14,15 +14,20 @@ namespace DiplomaMaster
     private CImageParserMaster ImageParser;
     private CMaskingMaster MaskingMaster;
     private CDenoiseMaster DenoiseMaster;
-      
+    private CNeuronProvider NeuronProvider;
+  
     private StructMainFormParams CurrentParams;
     private Dictionary<int, double> Intenisites;
+
+    private Image<Gray, Byte> curImage;
+    private Image<Gray, Byte> maskImage;
 
     public CControllerUnit()
     {
       ImageParser = new CImageParserMaster();
       DenoiseMaster = new CDenoiseMaster();
       MaskingMaster = new CMaskingMaster();
+      NeuronProvider = new CNeuronProvider();
     }
 
     #region функции для общения с формой
@@ -41,9 +46,12 @@ namespace DiplomaMaster
     public void Initialize(StructMainFormParams Params)
     {
       CImageProvider.InitImageProvider(Params);
+      curImage = GetSampleImage(Params.PathToLoadFolder).Convert<Gray, Byte>();
 
       MaskingMaster.SetMethod(Params.MaskingModes[Params.CurMaskingMode]);
-      DenoiseMaster.SetMethod(Params.DenoiseModes[Params.CurDenoiseMode]);
+      DenoiseMaster.SetMethod(Params.DenoiseModes[Params.CurDenoiseMode], curImage);
+      NeuronProvider.PrepareExport(Params);
+
     }
 
     // Переделать чтобы считывалось через ImageProvider
@@ -54,14 +62,15 @@ namespace DiplomaMaster
 
       string[] files = Directory.GetFiles(path);
       if (files.Length == 0) throw new Exception("GetSampleImage: input_path некорректен либо в папке не содержится файлов");
-
+                                                                                                                                                                                                                                                                                          
       Image<Bgr, Byte> tmp = new Image<Bgr, byte>(1, 1, new Bgr(0, 0, 0));
       try
       {
         tmp = new Image<Bgr, byte>(files[0]);
-      }
+        curImage = tmp.Convert<Gray, Byte>();
+      }          
       catch (Exception) { return null; }
-
+      
       return tmp;
     }
   
@@ -77,7 +86,7 @@ namespace DiplomaMaster
 
     public void SetDenoisingMethod(string method_name) 
     {
-      DenoiseMaster.SetMethod(method_name);
+      DenoiseMaster.SetMethod(method_name, curImage);
     }
 
     #region masks
@@ -124,6 +133,9 @@ namespace DiplomaMaster
     public  void StartProcessing()
     {
       int N = CImageProvider.TotalNumberOfImages;
+      curImage = CImageProvider.GetImage(0);
+      maskImage = MaskingMaster.Process(curImage);
+      ImageParser.PrepareImageParsingMethod(maskImage);
 
       for (int i = 0; i < N; i++)
       {
@@ -152,7 +164,7 @@ namespace DiplomaMaster
 
       IMG = DenoiseMaster.Process(IMG);
       Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
-      //NeuronProvider.AddValues(Intenisites);
+      NeuronProvider.AddValues(Intenisites);
     }
 
     public  void Export(StructMainFormParams P, string path)
