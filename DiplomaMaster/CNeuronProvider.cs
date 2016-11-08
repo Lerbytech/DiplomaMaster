@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DiplomaMaster
 {
-  public class CNeuronProvider : IDisposable
+  public class CNeuronProvider //: IDisposable
   {
     Dictionary<int, List<double>> NeuronIntensities;
 
@@ -15,7 +15,7 @@ namespace DiplomaMaster
     Task SaveToFileTask;
     Queue<Dictionary<int, double>> ValuesQueue;
     bool keepSaving;
-    object queueLock = new object();
+    //ject queueLock = new object();
 
     string pathToExportDirectory;
     bool disposed = false;
@@ -27,13 +27,13 @@ namespace DiplomaMaster
       outputFiles = new Dictionary<int, StreamWriter>();
       ValuesQueue = new Queue<Dictionary<int, double>>();
       keepSaving = true;
-      queueLock = new object();
+      //queueLock = new object();
     }
 
     public void PrepareExport(StructMainFormParams Params)
     {
       pathToExportDirectory = Params.PathToSaveFolder;
-      StartSaving();
+      //StartSaving();
     }
 
     /// <summary>
@@ -42,30 +42,20 @@ namespace DiplomaMaster
     /// <param name="newIntensities">словарь с новыми значениями интенсивностей нейронов</param>
     public void AddValues(Dictionary<int, double> newIntensities)
     {
-      ValuesQueue.Enqueue(newIntensities);
-
       /*
+      lock (ValuesQueue)
+        ValuesQueue.Enqueue(newIntensities);      
+       * */
+            /*
       foreach (var I in newIntensities)
       {
-        if (NeuronIntensities.ContainsKey(I.Key))
-        {
-          if (NeuronIntensities[I.Key].Count == 0)
-          {
-            NeuronIntensities[I.Key] = new List<double>();
-            
 
-          }
-          NeuronIntensities[I.Key].Add(I.Value);
-        }
-        else
-          NeuronIntensities.Add(I.Key, new List<double>() { I.Value });
-      }
+        if (!NeuronIntensities.ContainsKey(I.Key))
+          NeuronIntensities.Add(I.Key, new List<double>());
+        
+        NeuronIntensities[I.Key].Add(I.Value);
+      }       */
 
-      foreach (var I in NeuronIntensities)
-      {
-        outputFiles[I.Key].WriteLine(I.Value);
-      }
-      */
     }
 
     public void StartSaving()
@@ -74,40 +64,40 @@ namespace DiplomaMaster
 
       SaveToFileTask = new Task(new Action(() => 
       {
-      Dictionary<int, double> tempDict = ValuesQueue.Dequeue();
+        Dictionary<int, double> tempDict;// = ValuesQueue.Dequeue();
+        bool isInitFillDone = false;
 
-      while (keepSaving)
+
+        //в самый первый раз у нас нет данных сколько нейронов нашли. приходится костылить
+        // цикл выполняется пока не будет в очереди хотя бы один элемент. далее - никогда больше не вызывается
+        while (!isInitFillDone)
         {
-          if (ValuesQueue.Count != 0)
+          if (ValuesQueue.Count == 0)
+            continue;
+          else
           {
-            tempDict = ValuesQueue.Dequeue();
+            lock (ValuesQueue)
+            {
+              tempDict = ValuesQueue.Peek();
+            }
 
-            //---
             foreach (var I in tempDict)
             {
               if (NeuronIntensities.ContainsKey(I.Key))
-              {
-                if (NeuronIntensities[I.Key].Count == 0)
-                  NeuronIntensities[I.Key] = new List<double>();
+                throw new Exception("StartSaving: data duplication");
+              else 
+                NeuronIntensities.Add( I.Key, new List<double>() { I.Value} );
 
-                NeuronIntensities[I.Key].Add(I.Value);
-              }
+              if (outputFiles.ContainsKey(I.Key))
+                throw new Exception("StartSaving: data duplication");
               else
-                NeuronIntensities.Add(I.Key, new List<double>() { I.Value });
-
-              if (!outputFiles.ContainsKey(I.Key))
               {
                 outputFiles.Add(I.Key, new StreamWriter(pathToExportDirectory + "\\Neuron_" + I.Key + ".txt"));
                 outputFiles[I.Key].WriteLine(I.Value);
               }
-              else
-              {
-                throw new Exception("dfq?!!!");
-              }
             }
+            isInitFillDone = true;
           }
-          
-          break;
         }
 
         while (keepSaving)
@@ -116,25 +106,24 @@ namespace DiplomaMaster
           {
             try
             {
-              lock (queueLock)
+              lock (ValuesQueue)
               {
                 tempDict = ValuesQueue.Dequeue();
               }
               foreach (var I in tempDict)
               {
                 outputFiles[I.Key].WriteLine(I.Value);
+                NeuronIntensities[I.Key].Add(I.Value);
               }
             }
             catch (Exception ex)
             {
-
-            
+                   
             }
-        }
+          }
 
         }
-      }));
-
+        }));
     }
 
     public void FinishSaving()
@@ -145,7 +134,7 @@ namespace DiplomaMaster
         SaveToFileTask.Dispose();
     }
 
-
+                /*
     #region Хитрости чтобы файлы точно сохранились
     ~CNeuronProvider()
     {
@@ -186,5 +175,6 @@ namespace DiplomaMaster
     }
 
     #endregion
+                 * */
   }
 }

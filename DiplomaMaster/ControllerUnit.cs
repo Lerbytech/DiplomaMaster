@@ -139,7 +139,7 @@ namespace DiplomaMaster
       
       for (int i = 0; i < N; i++)
       {
-        Loop();
+         Loop();
       }
       NeuronProvider.FinishSaving();
     }
@@ -160,12 +160,12 @@ namespace DiplomaMaster
 
     private  void Loop()
     {
-      Image<Gray, Byte> IMG = CImageProvider.GetImage();
-      if (IMG == null) ; //поднять ивент о бяде или конце работы
+      Image<Gray, Byte> IMG = curImage; // CImageProvider.GetImage();
+      //if (IMG == null) ; //поднять ивент о бяде или конце работы
 
-      IMG = DenoiseMaster.Process(IMG);
-      Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
-      NeuronProvider.AddValues(Intenisites);
+      //IMG = DenoiseMaster.Process(IMG);
+      //Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
+      //NeuronProvider.AddValues(Intenisites);
     }
 
     public  void Export(StructMainFormParams P, string path)

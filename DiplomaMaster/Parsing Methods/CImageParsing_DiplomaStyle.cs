@@ -33,7 +33,7 @@ namespace DiplomaMaster.ImageParsingMethods
     public Dictionary<int, double> ApplyMask(Image<Gray, byte> newImage)
     {
       Dictionary<int, double> res = new Dictionary<int, double>();
-      Image<Gray, Byte> SignalImg = Masks[0].BodyMask.CopyBlank();
+      Image<Gray, Byte> SignalImg = newImage; // Masks[0].BodyMask.CopyBlank();
       Image<Gray, Byte> biggerImg = Masks[0].BodyMask.CopyBlank();
       
       for (int i = 0; i < Masks.Count; i++)
@@ -45,7 +45,7 @@ namespace DiplomaMaster.ImageParsingMethods
           newImage.CopyTo(biggerImg);
           CvInvoke.cvResetImageROI(biggerImg);
 
-          //SignalImg = biggerImg.Copy(Masks[i].BodyMask) - MinImg;
+          SignalImg = biggerImg.Copy(Masks[i].BodyMask);// -MinImg;
           res.Add(i, CvInvoke.Sum(SignalImg).V0);
         }
         catch (Exception ex) { }

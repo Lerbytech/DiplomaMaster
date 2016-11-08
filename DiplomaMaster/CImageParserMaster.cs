@@ -55,8 +55,6 @@ namespace DiplomaMaster
     public Dictionary<int, double> ApplyMask(Image<Gray, byte> newImage)
     {
       return strategy.ApplyMask(newImage);
-
-      //throw new NotImplementedException();
     }
 
     private string ParseMethodNameFromClassName(string className)
