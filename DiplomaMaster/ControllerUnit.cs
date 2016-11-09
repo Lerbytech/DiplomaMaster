@@ -136,7 +136,10 @@ namespace DiplomaMaster
       curImage = CImageProvider.GetImage(0);
       maskImage = MaskingMaster.Process(curImage);
       ImageParser.PrepareImageParsingMethod(maskImage);
-      
+      Intenisites = new Dictionary<int, double>();
+      for (int i = 0; i < 15; i++)
+        Intenisites.Add(i, i);
+
       for (int i = 0; i < N; i++)
       {
          Loop();
@@ -161,11 +164,12 @@ namespace DiplomaMaster
     private  void Loop()
     {
       Image<Gray, Byte> IMG = curImage; // CImageProvider.GetImage();
-      //if (IMG == null) ; //поднять ивент о бяде или конце работы
+      if (IMG == null) ; //поднять ивент о бяде или конце работы
 
-      //IMG = DenoiseMaster.Process(IMG);
-      //Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
-      //NeuronProvider.AddValues(Intenisites);
+      IMG = DenoiseMaster.Process(IMG);
+      Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
+      
+      NeuronProvider.AddValues(Intenisites);
     }
 
     public  void Export(StructMainFormParams P, string path)

@@ -42,11 +42,13 @@ namespace DiplomaMaster
     /// <param name="newIntensities">словарь с новыми значениями интенсивностей нейронов</param>
     public void AddValues(Dictionary<int, double> newIntensities)
     {
+
+
       /*
       lock (ValuesQueue)
         ValuesQueue.Enqueue(newIntensities);      
        * */
-            /*
+            
       foreach (var I in newIntensities)
       {
 
@@ -54,7 +56,7 @@ namespace DiplomaMaster
           NeuronIntensities.Add(I.Key, new List<double>());
         
         NeuronIntensities[I.Key].Add(I.Value);
-      }       */
+      }       
 
     }
 
