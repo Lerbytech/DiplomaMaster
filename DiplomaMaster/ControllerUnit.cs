@@ -22,6 +22,9 @@ namespace DiplomaMaster
     private Image<Gray, Byte> curImage;
     private Image<Gray, Byte> maskImage;
 
+    public delegate void NewImageProcessingHandler(Image<Gray, Byte> img);
+    public event NewImageProcessingHandler onNewImage;
+
     public CControllerUnit()
     {
       ImageParser = new CImageParserMaster();
@@ -42,6 +45,11 @@ namespace DiplomaMaster
     }
 
     #endregion
+
+    public int GetTotalNumberOfImages()
+    {
+      return CImageProvider.TotalNumberOfImages;
+    }
 
     public void Initialize(StructMainFormParams Params)
     {
@@ -136,14 +144,15 @@ namespace DiplomaMaster
       curImage = CImageProvider.GetImage(0);
       maskImage = MaskingMaster.Process(curImage);
       ImageParser.PrepareImageParsingMethod(maskImage);
-      Intenisites = new Dictionary<int, double>();
-      for (int i = 0; i < 15; i++)
-        Intenisites.Add(i, i);
 
       for (int i = 0; i < N; i++)
       {
          Loop();
+        onNewImage(curImage);
+        
       }
+
+      Dictionary<int, List<double>> rr = NeuronProvider.NeuronIntensities;
       NeuronProvider.FinishSaving();
     }
 
@@ -163,11 +172,11 @@ namespace DiplomaMaster
 
     private  void Loop()
     {
-      Image<Gray, Byte> IMG = curImage; // CImageProvider.GetImage();
-      if (IMG == null) ; //поднять ивент о бяде или конце работы
+      curImage = CImageProvider.GetImage();
+      if (curImage == null) ; //поднять ивент о бяде или конце работы
 
-      IMG = DenoiseMaster.Process(IMG);
-      Intenisites = ImageParser.ApplyMask(IMG); // получаем словарь с данными интенсивностей нейронов      
+      curImage = DenoiseMaster.Process(curImage);
+      Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
       
       NeuronProvider.AddValues(Intenisites);
     }

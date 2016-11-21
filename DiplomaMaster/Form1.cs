@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 using Emgu.CV;
 using Emgu.CV.Util;
@@ -72,12 +73,9 @@ namespace DiplomaMaster
       get { return MainFormParameters.PathToSaveFolder; }
       private set
       {
-        if (MainFormParameters.PathToSaveFolder != String.Empty && MainFormParameters.PathToSaveFolder != null)
-        {
-          MainFormParameters.PathToSaveFolder = value;
-          //ControllerUnit.Initialize(MainFormParameters);
-        }
-        else TB_SavePath.Text = String.Empty;
+        MainFormParameters.PathToSaveFolder = value;
+        ControllerUnit.Initialize(MainFormParameters);
+        TB_SavePath.Text = value;
       }
     }
 
@@ -97,7 +95,8 @@ namespace DiplomaMaster
 
       FillMaskingOptions();
       FillDenoiseOptions();
-      
+
+      ControllerUnit.onNewImage += UpdateImageBox;
       //onFormUpdated += ControllerUnit.FormUpdated(MainFormParameters);
     }
 
@@ -145,187 +144,198 @@ namespace DiplomaMaster
     }
     #endregion
 
+    public void UpdateImageBox(Image<Gray, Byte> newImage)
+    {
+      //BigImageBox.Image = newImage.Copy().Resize(BigImageBox.Width, BigImageBox.Height, Inter.Linear);
+      ProgressBar.Value += 1;
+      Application.DoEvents();
+    }
+
     //-------------------------
     private void BTN_StartProcessing_Click(object sender, EventArgs e)
     {
       ControllerUnit.Initialize(MainFormParameters);
+      ProgressBar.Maximum = ControllerUnit.GetTotalNumberOfImages();
       ControllerUnit.StartProcessing();
+      int b = 5;
 
-      #region Check input path and save path
+      b++;
 
-      bool is_all_paths_correct = true;
-      
-      bool FIRST = false;
+//      #region Check input path and save path
 
+//      bool is_all_paths_correct = true;
       
-        if (!Directory.Exists(TB_DataPath.Text)) is_all_paths_correct = false;
-        // Check save path
-        if (TB_SavePath.Text.IndexOfAny(Path.GetInvalidPathChars()) != -1) is_all_paths_correct = false;
-        if (!is_all_paths_correct) throw new Exception("Invalid paths!");
-        else
-        {
-          input_path = TB_DataPath.Text;
-          save_path = TB_SavePath.Text;
-        }
-      
-      #endregion
+//      bool FIRST = false;
 
       
-        #region Create output directories
-        if (Directory.Exists(save_path)) Directory.Delete(save_path);
-        Directory.CreateDirectory(save_path);
-        Directory.CreateDirectory(save_path + @"\Raw\");
-        Directory.CreateDirectory(save_path + @"\Z-Project Gray\");
-        Directory.CreateDirectory(save_path + @"\Z-Project Color\");
-        Directory.CreateDirectory(save_path + @"\Sigma Rejection\");
-        Directory.CreateDirectory(save_path + @"\Binary Masks\");
-
-        Directory.CreateDirectory(save_path + @"\Neurons Data\");
-        Directory.CreateDirectory(save_path + @"\Neurons Data\Images\");
-        Directory.CreateDirectory(save_path + @"\Neurons Data\AvgImages\");
-        Directory.CreateDirectory(save_path + @"\Neurons Data\RawImages\");
-        Directory.CreateDirectory(save_path + @"\Neurons Data\AvgRawImages\");
-
-        Directory.CreateDirectory(save_path + @"\Plots\");
-        Directory.CreateDirectory(save_path + @"\Plots\Images\");
-        Directory.CreateDirectory(save_path + @"\Plots\AvgImages\");
-        Directory.CreateDirectory(save_path + @"\Plots\RawImages\");
-        Directory.CreateDirectory(save_path + @"\Plots\AvgRawImages\");
-
-        #endregion
+//        if (!Directory.Exists(TB_DataPath.Text)) is_all_paths_correct = false;
+//        // Check save path
+//        if (TB_SavePath.Text.IndexOfAny(Path.GetInvalidPathChars()) != -1) is_all_paths_correct = false;
+//        if (!is_all_paths_correct) throw new Exception("Invalid paths!");
+//        else
+//        {
+//          input_path = TB_DataPath.Text;
+//          save_path = TB_SavePath.Text;
+//        }
       
-      // Read all input images and sort them
-      List<Image<Gray, Byte>> RawImages = GetImages(GetFiles(input_path));
-      for (int i = 0; i < RawImages.Count; i++) RawImages[i].Save(save_path + @"\Raw\" + i.ToString() + ".png");
-      
-      #region Z-Projections
-        //Find Z-Projections
-        Image<Gray, Byte> ZP_MinImg = Z_Projections.ZP_Min(RawImages);
-        Image<Gray, Byte> ZP_MaxImg = Z_Projections.ZP_Max(RawImages);
-        //Save Z-Projections
-        ZP_MinImg.Save((save_path + @"\Z-Project Gray\" + "Min.png"));
-        ZP_MaxImg.Save((save_path + @"\Z-Project Gray\" + "Max.png"));
-        #endregion
-      
-      #region Sigma-Rejections
-      //List<Image<Gray, Byte>> Images = GetImages(GetFiles(input_path));
-      List<Image<Gray, Byte>> Images = new List<Image<Gray, byte>>();
-      //Images.AddRange(RawImages);
+//      #endregion
 
-        ImgProcTools.Denoise.PrepareDenoiseFunctions(RawImages[0].Width, RawImages[0].Height);
-        //Save sigma Rejections
-        for (int i = 0; i < RawImages.Count; i++)
-        {
-          Images.Add(ImgProcTools.Denoise.SigmaReject2(RawImages[i]));
-          Images[i].Save(save_path + @"\Sigma Rejection\" + i.ToString() + ".png");
-        }
+      
+//        #region Create output directories
+//        if (Directory.Exists(save_path)) Directory.Delete(save_path);
+//        Directory.CreateDirectory(save_path);
+//        Directory.CreateDirectory(save_path + @"\Raw\");
+//        Directory.CreateDirectory(save_path + @"\Z-Project Gray\");
+//        Directory.CreateDirectory(save_path + @"\Z-Project Color\");
+//        Directory.CreateDirectory(save_path + @"\Sigma Rejection\");
+//        Directory.CreateDirectory(save_path + @"\Binary Masks\");
+
+//        Directory.CreateDirectory(save_path + @"\Neurons Data\");
+//        Directory.CreateDirectory(save_path + @"\Neurons Data\Images\");
+//        Directory.CreateDirectory(save_path + @"\Neurons Data\AvgImages\");
+//        Directory.CreateDirectory(save_path + @"\Neurons Data\RawImages\");
+//        Directory.CreateDirectory(save_path + @"\Neurons Data\AvgRawImages\");
+
+//        Directory.CreateDirectory(save_path + @"\Plots\");
+//        Directory.CreateDirectory(save_path + @"\Plots\Images\");
+//        Directory.CreateDirectory(save_path + @"\Plots\AvgImages\");
+//        Directory.CreateDirectory(save_path + @"\Plots\RawImages\");
+//        Directory.CreateDirectory(save_path + @"\Plots\AvgRawImages\");
+
+//        #endregion
+      
+//      // Read all input images and sort them
+//      List<Image<Gray, Byte>> RawImages = GetImages(GetFiles(input_path));
+//      for (int i = 0; i < RawImages.Count; i++) RawImages[i].Save(save_path + @"\Raw\" + i.ToString() + ".png");
+      
+//      #region Z-Projections
+//        //Find Z-Projections
+//        Image<Gray, Byte> ZP_MinImg = Z_Projections.ZP_Min(RawImages);
+//        Image<Gray, Byte> ZP_MaxImg = Z_Projections.ZP_Max(RawImages);
+//        //Save Z-Projections
+//        ZP_MinImg.Save((save_path + @"\Z-Project Gray\" + "Min.png"));
+//        ZP_MaxImg.Save((save_path + @"\Z-Project Gray\" + "Max.png"));
+//        #endregion
+      
+//      #region Sigma-Rejections
+//      //List<Image<Gray, Byte>> Images = GetImages(GetFiles(input_path));
+//      List<Image<Gray, Byte>> Images = new List<Image<Gray, byte>>();
+//      //Images.AddRange(RawImages);
+
+//        ImgProcTools.Denoise.PrepareDenoiseFunctions(RawImages[0].Width, RawImages[0].Height);
+//        //Save sigma Rejections
+//        for (int i = 0; i < RawImages.Count; i++)
+//        {
+//          Images.Add(ImgProcTools.Denoise.SigmaReject2(RawImages[i]));
+//          Images[i].Save(save_path + @"\Sigma Rejection\" + i.ToString() + ".png");
+//        }
      
    
-      #endregion 
+//      #endregion 
 
-      #region Make init mask
-      Image<Gray, byte> TMP = new Image<Gray, byte>(Images[10].Size); // with small pixels
-      Image<Gray, byte> TMP2 = new Image<Gray, byte>(Images[10].Size); //NO SMALL pixels
-      TMP = Images[10].Clone();
-      TMP2 = Images[10].Clone();
-      CvInvoke.CLAHE(Images[10], 100, new System.Drawing.Size(8, 8), TMP);
+//      #region Make init mask
+//      Image<Gray, byte> TMP = new Image<Gray, byte>(Images[10].Size); // with small pixels
+//      Image<Gray, byte> TMP2 = new Image<Gray, byte>(Images[10].Size); //NO SMALL pixels
+//      TMP = Images[10].Clone();
+//      TMP2 = Images[10].Clone();
+//      CvInvoke.CLAHE(Images[10], 100, new System.Drawing.Size(8, 8), TMP);
       
-      double MaxEl = 154;
-      TMP = TMP.ThresholdToZero(new Gray(MaxEl));
-      TMP._EqualizeHist();
+//      double MaxEl = 154;
+//      TMP = TMP.ThresholdToZero(new Gray(MaxEl));
+//      TMP._EqualizeHist();
       
-      //TMP.Save(@"C:\Users\Админ\Desktop\TMP.png");
+//      //TMP.Save(@"C:\Users\Админ\Desktop\TMP.png");
       
-      Image<Gray, Byte> NoiseMask = TMP.ThresholdBinary(new Gray(10),  new Gray(255));
+//      Image<Gray, Byte> NoiseMask = TMP.ThresholdBinary(new Gray(10),  new Gray(255));
       
-      NoiseMask = NoiseMask.Erode(1);
-      NoiseMask = NoiseMask.Dilate(1);
+//      NoiseMask = NoiseMask.Erode(1);
+//      NoiseMask = NoiseMask.Dilate(1);
       
-      TMP2 = TMP.Copy(NoiseMask);
+//      TMP2 = TMP.Copy(NoiseMask);
       
 
-      TMP2.Save(save_path + "\\InitMask.png");
-      #endregion
+//      TMP2.Save(save_path + "\\InitMask.png");
+//      #endregion
 
-      #region generate bin masks
-     // save_path = @"C:\Users\Admin\Desktop\Антон\EXPERIMENTS\Processed\Processed\2CH_65 part 1";
+//      #region generate bin masks
+//     // save_path = @"C:\Users\Admin\Desktop\Антон\EXPERIMENTS\Processed\Processed\2CH_65 part 1";
       
-      TMP = ImgProcTools.BinarizationMethods.BinByDistanceTransform(new Image<Gray, Byte>(save_path + "\\InitMask2.png"));
+//      TMP = ImgProcTools.BinarizationMethods.BinByDistanceTransform(new Image<Gray, Byte>(save_path + "\\InitMask2.png"));
       
-      VectorOfVectorOfPoint AllContours = ImgProcTools.EdgeDetection.SimplestEdgeDetection(TMP);
+//      VectorOfVectorOfPoint AllContours = ImgProcTools.EdgeDetection.SimplestEdgeDetection(TMP);
     
-      List<VectorOfPoint> smallContours = new List<VectorOfPoint>();
-      List<VectorOfPoint> rejectedContours = new List<VectorOfPoint>();
-      List<VectorOfPoint> BigContours = NeuronSeparation.Calculations.SeparateSmallContours(NeuronSeparation.Converter.VVOPToListOfVOP(AllContours), out smallContours, out rejectedContours, 100);
+//      List<VectorOfPoint> smallContours = new List<VectorOfPoint>();
+//      List<VectorOfPoint> rejectedContours = new List<VectorOfPoint>();
+//      List<VectorOfPoint> BigContours = NeuronSeparation.Calculations.SeparateSmallContours(NeuronSeparation.Converter.VVOPToListOfVOP(AllContours), out smallContours, out rejectedContours, 100);
 
-      List<NeuronBodyMask> NBM = new List<NeuronBodyMask>();
-      NBM = NeuronSeparation.Masks.GetNeuronBodyMasks(BigContours);
-      #endregion
+//      List<NeuronBodyMask> NBM = new List<NeuronBodyMask>();
+//      NBM = NeuronSeparation.Masks.GetNeuronBodyMasks(BigContours);
+//      #endregion
 
-      #region save all masks
-      Image<Gray, Byte> SignalImg = NBM[0].BodyMask.CopyBlank();
-      CvInvoke.cvSetImageROI(SignalImg, new Rectangle( 5, 5, 172, 130));
-      //CvInvoke.cvResetImageROI(SignalImg);
-      try
-      {
-        ZP_MaxImg.CopyTo(SignalImg);
-        ZP_MaxImg = SignalImg.Clone();
-        CvInvoke.cvResetImageROI(ZP_MaxImg);
-        Images[10].CopyTo(SignalImg);
-      }
-      catch (Exception ex) { }
-      CvInvoke.cvResetImageROI(SignalImg);
+//      #region save all masks
+//      Image<Gray, Byte> SignalImg = NBM[0].BodyMask.CopyBlank();
+//      CvInvoke.cvSetImageROI(SignalImg, new Rectangle( 5, 5, 172, 130));
+//      //CvInvoke.cvResetImageROI(SignalImg);
+//      try
+//      {
+//        ZP_MaxImg.CopyTo(SignalImg);
+//        ZP_MaxImg = SignalImg.Clone();
+//        CvInvoke.cvResetImageROI(ZP_MaxImg);
+//        Images[10].CopyTo(SignalImg);
+//      }
+//      catch (Exception ex) { }
+//      CvInvoke.cvResetImageROI(SignalImg);
 
-      Image<Bgr, Byte> BGRImg; // = new Image<Bgr, byte>(Images[0].Bitmap);
-      for (int i = 0; i < NBM.Count; i++)
-      {
-        //Pure Mask
-        NBM[i].BodyMask.Save(save_path + @"\Binary Masks\" + i.ToString() + ".png");
-        //Signal
-        try
-        {
-          SignalImg = ZP_MaxImg.Copy(NBM[i].BodyMask);
-          //ZP_MaxImg.Copy(NBM[i].BodyMask).CopyTo(SignalImg);
-        }
-        catch (Exception ex) { }
-        SignalImg.Save(save_path + @"\Binary Masks\Signal_" + i.ToString() + ".png");
-        //Borders
-        /*
-        BGRImg = new Image<Bgr,byte>(ZP_MaxImg.Bitmap);
-        try
-        {
-          CvInvoke.DrawContours(BGRImg, BigContours[i], 0, new MCvScalar(0, 255, 0), 1, Emgu.CV.CvEnum.LineType.EightConnected);
-        }
-        catch (Exception ex) { }
-        BGRImg.Save(save_path + @"\Binary Masks\ColorSignal_" + i.ToString() + ".png");
-         * */
-      }
-      #endregion
+//      Image<Bgr, Byte> BGRImg; // = new Image<Bgr, byte>(Images[0].Bitmap);
+//      for (int i = 0; i < NBM.Count; i++)
+//      {
+//        //Pure Mask
+//        NBM[i].BodyMask.Save(save_path + @"\Binary Masks\" + i.ToString() + ".png");
+//        //Signal
+//        try
+//        {
+//          SignalImg = ZP_MaxImg.Copy(NBM[i].BodyMask);
+//          //ZP_MaxImg.Copy(NBM[i].BodyMask).CopyTo(SignalImg);
+//        }
+//        catch (Exception ex) { }
+//        SignalImg.Save(save_path + @"\Binary Masks\Signal_" + i.ToString() + ".png");
+//        //Borders
+//        /*
+//        BGRImg = new Image<Bgr,byte>(ZP_MaxImg.Bitmap);
+//        try
+//        {
+//          CvInvoke.DrawContours(BGRImg, BigContours[i], 0, new MCvScalar(0, 255, 0), 1, Emgu.CV.CvEnum.LineType.EightConnected);
+//        }
+//        catch (Exception ex) { }
+//        BGRImg.Save(save_path + @"\Binary Masks\ColorSignal_" + i.ToString() + ".png");
+//         * */
+//      }
+//      #endregion
 
-      try
-      {
+//      try
+//      {
         
-        List<List<double>> Intensities = GetIntensities(Images, NBM);
-        SaveIntensities(Intensities, save_path + @"\Neurons Data\Images\");
-        //PlotGraphics(Intensities, save_path + @"\Plots\Images\");
+//        List<List<double>> Intensities = GetIntensities(Images, NBM);
+//        SaveIntensities(Intensities, save_path + @"\Neurons Data\Images\");
+//        //PlotGraphics(Intensities, save_path + @"\Plots\Images\");
 
-        for (int i = 0; i < Intensities.Count; i++)
-          Intensities[i] = WindowAVG(Intensities[i], 20);
-        SaveIntensities(Intensities, save_path + @"\Neurons Data\AvgImages\");
-        //PlotGraphics(Intensities, save_path + @"\Plots\AvgImages\");
-        //
-        Intensities = GetIntensities(RawImages, NBM);
-        SaveIntensities(Intensities, save_path + @"\Neurons Data\RawImages\");
-//        PlotGraphics(Intensities, save_path + @"\Plots\RawImages\");
+//        for (int i = 0; i < Intensities.Count; i++)
+//          Intensities[i] = WindowAVG(Intensities[i], 20);
+//        SaveIntensities(Intensities, save_path + @"\Neurons Data\AvgImages\");
+//        //PlotGraphics(Intensities, save_path + @"\Plots\AvgImages\");
+//        //
+//        Intensities = GetIntensities(RawImages, NBM);
+//        SaveIntensities(Intensities, save_path + @"\Neurons Data\RawImages\");
+////        PlotGraphics(Intensities, save_path + @"\Plots\RawImages\");
 
-        for (int i = 0; i < Intensities.Count; i++)
-          Intensities[i] = WindowAVG(Intensities[i], 20);
-        SaveIntensities(Intensities, save_path + @"\Neurons Data\AvgRawImages\");
-  //      PlotGraphics(Intensities, save_path + @"\Plots\AvgRawImages\");
-      }
-      catch (Exception ex) { }
+//        for (int i = 0; i < Intensities.Count; i++)
+//          Intensities[i] = WindowAVG(Intensities[i], 20);
+//        SaveIntensities(Intensities, save_path + @"\Neurons Data\AvgRawImages\");
+//  //      PlotGraphics(Intensities, save_path + @"\Plots\AvgRawImages\");
+//      }
+//      catch (Exception ex) { }
 
-      int b = 5;
+//      int b = 5;
 
 
       

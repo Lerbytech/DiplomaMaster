@@ -71,13 +71,10 @@ namespace DiplomaMaster
     /// <returns> изображение Image<Gray, Byte> или null</returns>
     public static Image<Gray, Byte> GetImage()
     {
-      CurrImgIndex++;
-      string qq = FullPathsToFiles[CurrImgIndex];
-      IMG = new Image<Gray, byte>(@"C:\Users\Admin\Desktop\Антон\Тестовые картинки\2672.png");
       if (CurrImgIndex < TotalNumberOfImages)
         IMG = new Image<Gray, byte>(FullPathsToFiles[CurrImgIndex]);
       else IMG = null;
-
+      CurrImgIndex++;
       return IMG;
     }
 

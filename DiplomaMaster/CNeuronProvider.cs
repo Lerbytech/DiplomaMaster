@@ -9,7 +9,7 @@ namespace DiplomaMaster
 {
   public class CNeuronProvider //: IDisposable
   {
-    Dictionary<int, List<double>> NeuronIntensities;
+    public Dictionary<int, List<double>> NeuronIntensities;
 
     Dictionary<int, StreamWriter> outputFiles;
     Task SaveToFileTask;
@@ -42,8 +42,6 @@ namespace DiplomaMaster
     /// <param name="newIntensities">словарь с новыми значениями интенсивностей нейронов</param>
     public void AddValues(Dictionary<int, double> newIntensities)
     {
-
-
       /*
       lock (ValuesQueue)
         ValuesQueue.Enqueue(newIntensities);      
@@ -56,9 +54,25 @@ namespace DiplomaMaster
           NeuronIntensities.Add(I.Key, new List<double>());
         
         NeuronIntensities[I.Key].Add(I.Value);
-      }       
+      }
 
+      SaveValues(newIntensities);
     }
+
+    private void SaveValues(Dictionary<int, double> newIntensities)
+    {
+      foreach (var I in newIntensities)
+      {
+        if (!outputFiles.ContainsKey(I.Key))
+        {
+          outputFiles.Add(I.Key, new StreamWriter(pathToExportDirectory + "Neuron" + I.Key.ToString() + ".txt"));
+          string s = pathToExportDirectory + "Neuron" + I.Key.ToString() + ".txt";
+        }
+
+        outputFiles[I.Key].WriteLine(I.Value.ToString());
+      }
+    }
+
 
     public void StartSaving()
     {
@@ -130,10 +144,15 @@ namespace DiplomaMaster
 
     public void FinishSaving()
     {
+      foreach (var I in outputFiles)
+        I.Value.Close();
+
+      /*
       while (ValuesQueue.Count != 0) ;
 
       if (SaveToFileTask.Wait(100))
         SaveToFileTask.Dispose();
+        */
     }
 
                 /*
