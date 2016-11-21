@@ -61,12 +61,13 @@ namespace DiplomaMaster
 
     private void SaveValues(Dictionary<int, double> newIntensities)
     {
+      
       foreach (var I in newIntensities)
       {
         if (!outputFiles.ContainsKey(I.Key))
         {
-          outputFiles.Add(I.Key, new StreamWriter(pathToExportDirectory + "Neuron" + I.Key.ToString() + ".txt"));
-          string s = pathToExportDirectory + "Neuron" + I.Key.ToString() + ".txt";
+          outputFiles.Add(I.Key, new StreamWriter(pathToExportDirectory + "\\Neuron" + I.Key.ToString() + ".txt"));
+          string s = pathToExportDirectory + "\\Neuron" + I.Key.ToString() + ".txt";
         }
 
         outputFiles[I.Key].WriteLine(I.Value.ToString());

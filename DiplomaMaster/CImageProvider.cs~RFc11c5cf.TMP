@@ -99,33 +99,6 @@ namespace DiplomaMaster
     }
 
     /// <summary>
-    /// Получить новое изображение и временной промежуток. Если его нет, возвращает null.
-    /// </summary>
-    /// <returns></returns>
-    public static Image<Gray, Byte> GetImage(out int dt)
-    {
-      dt = 0;
-
-      int A;
-      int Z;
-      if (CurrImgIndex < TotalNumberOfImages)
-      {
-        IMG = new Image<Gray, byte>(FullPathsToFiles[CurrImgIndex]);
-        A = FullPathsToFiles[CurrImgIndex].LastIndexOf('_');
-        Z = FullPathsToFiles[CurrImgIndex].IndexOf(".Png");
-        dt = Convert.ToInt32( FullPathsToFiles[CurrImgIndex].Substring(A, Z - A));
-      }
-      else
-      {
-        IMG = null;
-        dt = 0;
-      }
-      CurrImgIndex++;
-      return IMG;
-    }
-
-
-    /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>

@@ -172,7 +172,8 @@ namespace DiplomaMaster
 
     private  void Loop()
     {
-      curImage = CImageProvider.GetImage();
+      int dt = 0;
+      curImage = CImageProvider.GetImage(out dt);
       if (curImage == null) ; //поднять ивент о бяде или конце работы
 
       curImage = DenoiseMaster.Process(curImage);
