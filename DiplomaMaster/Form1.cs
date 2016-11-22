@@ -31,6 +31,17 @@ namespace DiplomaMaster
     public delegate void FormUpdatedHandler(StructMainFormParams newParams);
     public event FormUpdatedHandler onFormUpdated;
 
+    public Image<Gray, Byte> SmallImage
+    {
+      get { return _smallImage; }
+      private set
+      {
+        _smallImage = value;
+        BigImage = value.Convert<Bgr, Byte>();
+        MainFormParameters.sampleImage = value.Clone();
+      }
+    }
+
     public Image<Gray, Byte> MaskImage
     {
       get { return _MaskImage; }
@@ -65,9 +76,7 @@ namespace DiplomaMaster
       private set
       {
         MainFormParameters.PathToLoadFolder = value;
-        //ControllerUnit.Initialize(MainFormParameters);
         DrawSampleImage();
-        
       }
     }
     public string save_path
@@ -76,9 +85,9 @@ namespace DiplomaMaster
       private set
       {
         MainFormParameters.PathToSaveFolder = value;
-        ControllerUnit.Initialize(MainFormParameters);
         TB_SavePath.Text = value;
         DrawMaskImage();
+        DrawAugmentatedImage();
       }
     }
 
@@ -135,10 +144,7 @@ namespace DiplomaMaster
 
     private void DrawMaskImage()
     {
-      //MaskImage = ControllerUnit.GetMask();
-
-
-
+      MaskImage = ControllerUnit.GetMask(SmallImage);
     }
 
     private void DrawSampleImage()
@@ -149,17 +155,47 @@ namespace DiplomaMaster
         tmp = ControllerUnit.GetSampleImage(input_path);
       }
       catch (Exception ex) { MessageBox.Show(ex.Message); }
-      if ( tmp == null) MessageBox.Show("DrawSampleImage: не удается отобразить изображение"); 
-
+      if ( tmp == null) MessageBox.Show("DrawSampleImage: не удается отобразить изображение");
+      
+      SmallImage = tmp.Convert<Gray, Byte>();      
       BigImage = tmp;
+    }
+
+    private void DrawAugmentatedImage()
+    {
+      Image<Bgr, Byte> res = BigImage.Clone();
+      Image<Gray, Byte> mask = MaskImage.ThresholdBinary(new Gray(1), new Gray(128));
+      
+      byte[, ,] resData = res.Data;
+      byte[, ,] maskData = mask.Data;
+      byte[, ,] smallData = SmallImage.Data;
+
+      byte val = 128;
+
+      int H = res.Height;
+      int W = res.Width;
+
+
+      for (int y = 0; y < H; y++)
+        for (int x = 0; x < W; x++)
+        {
+          if (maskData[y, x, 0] == 255)
+          {
+            resData[y, x, 0] = 255;
+            resData[y, x, 1] = 255;
+            resData[y, x, 2] = 255;
+          }
+        }
+      //res[1] = mask;
+
+      AugImage = res;
+
     }
     #endregion
 
     public void UpdateImageBox(Image<Gray, Byte> newImage)
     {
-      //BigImageBox.Image = newImage.Copy().Resize(BigImageBox.Width, BigImageBox.Height, Inter.Linear);
-      
-      //ProgressBar.Value += 1;
+      ProgressBar.Value += 1;
       
       Application.DoEvents();
     }

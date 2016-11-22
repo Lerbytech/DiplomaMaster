@@ -130,11 +130,15 @@ namespace DiplomaMaster
       //ImageParser.SetMask(inputImg);
     }
 
-    public  Image<Gray, Byte> GetMask()
+    public  Image<Gray, Byte> GetMask(Image<Gray, Byte> sourceImg)
+    {
+      return MaskingMaster.GetMaskImage(sourceImg);
+    }
+
+    public Image<Gray, Byte> GetMask()
     {
       return MaskingMaster.GetMaskImage();
     }
-
     #endregion
    
     public  void StartProcessing()
@@ -143,22 +147,20 @@ namespace DiplomaMaster
       curImage = CImageProvider.GetImage(0);
       maskImage = MaskingMaster.Process(curImage);
       ImageParser.PrepareImageParsingMethod(maskImage);
-
+      //Image<Gray, Byte> medianImage = new Image<Gray, byte>(@"");
       for (int i = 0; i < N; i++)
       {
          Loop();
-        curImage.Save(CurrentParams.PathToSaveFolder + i.ToString() + ".Png");
+        //curImage.Save(CurrentParams.PathToSaveFolder + i.ToString() + ".Png");
         onNewImage(curImage);
         
       }
 
-      Image<Gray, byte> test = MaskingMaster.GetMaskImage();
-      test.Save(@"C:\Users\Админ\Desktop\СЕС\MaskImage.png");
+      MaskingMaster.GetMaskImage().Save(CurrentParams.PathToSaveFolder + "\\MaskImage.png");
       List<NeuronBodyMask> NBML = MaskingMaster.GetListOfNeuronBodyMasks();
       for (int i = 0; i < NBML.Count; i++)
         NBML[i].BodyMask.Save(CurrentParams.PathToSaveFolder + "\\mask_" + i.ToString() + ".Png");
-        //NBML[i].BodyMask.Save(@"C:\Users\Админ\Desktop\СЕС\mask_" + i.ToString() + ".Png");
-      Dictionary<int, List<double>> rr = NeuronProvider.NeuronIntensities;
+     
       NeuronProvider.FinishSaving();
     }
 
@@ -178,14 +180,32 @@ namespace DiplomaMaster
 
     private  void Loop()
     {
-      int dt = 0;
-      curImage = CImageProvider.GetImage(out dt);
+      //int dt = 0;
+      //curImage = CImageProvider.GetImage(out dt);
+      curImage = CImageProvider.GetImage();
       if (curImage == null) ; //поднять ивент о бяде или конце работы
 
       curImage = DenoiseMaster.Process(curImage);
       
       Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
-      NeuronProvider.AddValues(Intenisites, dt);
+      //NeuronProvider.AddValues(Intenisites, dt);
+      NeuronProvider.AddValues(Intenisites);
+    }
+
+    private void Loop(Image<Gray, Byte> backgroundImage)
+    {
+      //int dt = 0;
+      //curImage = CImageProvider.GetImage(out dt);
+      curImage = CImageProvider.GetImage();
+      if (curImage == null) ; //поднять ивент о бяде или конце работы
+
+      curImage = DenoiseMaster.Process(curImage);
+
+      curImage = curImage - backgroundImage;
+
+      Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
+      //NeuronProvider.AddValues(Intenisites, dt);
+      NeuronProvider.AddValues(Intenisites);
     }
 
     public  void Export(StructMainFormParams P, string path)

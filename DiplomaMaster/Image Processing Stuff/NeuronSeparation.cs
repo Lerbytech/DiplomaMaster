@@ -343,7 +343,7 @@ namespace DiplomaMaster
 
     public static class Masks
     {
-      public static List<NeuronBodyMask> GetNeuronBodyMasks(List<VectorOfPoint> input)
+      public static List<NeuronBodyMask> GenerateNeuronBodyMasks(List<VectorOfPoint> input)
       {
         List<NeuronBodyMask> result = new List<NeuronBodyMask>();
         NeuronBodyMask tmp_mask = new NeuronBodyMask();

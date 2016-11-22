@@ -31,7 +31,7 @@ namespace DiplomaMaster.ImageParsingMethods
                                                                                             out smallContours, out rejectedContours, threshold);
 
       Masks = new List<NeuronBodyMask>();
-      Masks = NeuronSeparation.Masks.GetNeuronBodyMasks(BigContours);
+      Masks = NeuronSeparation.Masks.GenerateNeuronBodyMasks(BigContours);
       res = new Dictionary<int, double>();
     }
 

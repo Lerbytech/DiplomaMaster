@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Emgu.CV;
+using Emgu.CV.Util;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Emgu.Util;
+using Emgu.Util.TypeEnum;
+
 namespace DiplomaMaster
 {
   public struct StructMainFormParams
@@ -17,6 +24,7 @@ namespace DiplomaMaster
     public int CurDenoiseMode;
     public List<string> MaskingModes;
     public int CurMaskingMode;
+    public Image<Gray, Byte> sampleImage;
 
     public void SetDefaultParams()
     {
@@ -30,6 +38,7 @@ namespace DiplomaMaster
       CurDenoiseMode = 0;
       MaskingModes = new List<string>();
       CurMaskingMode = 0;
+      sampleImage = null;
     }
   }
 }

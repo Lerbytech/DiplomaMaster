@@ -70,7 +70,6 @@ namespace DiplomaMaster
 
     public Image<Gray, Byte> GetMaskImage()
     {
-
       return MaskImage;
     }
 
@@ -96,7 +95,7 @@ namespace DiplomaMaster
 
       List<VectorOfPoint> BigContours = NeuronSeparation.Calculations.SeparateSmallContours(NeuronSeparation.Converter.VVOPToListOfVOP(AllContours), out smallContours, out rejectedContours, Threshold);
 
-      NeuronBodyMasks = NeuronSeparation.Masks.GetNeuronBodyMasks(BigContours);
+      NeuronBodyMasks = NeuronSeparation.Masks.GenerateNeuronBodyMasks(BigContours);
     }
   }
 }
