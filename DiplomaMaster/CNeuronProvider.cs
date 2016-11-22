@@ -59,6 +59,42 @@ namespace DiplomaMaster
       SaveValues(newIntensities);
     }
 
+    public void AddValues(Dictionary<int, double> newIntensities, int dt)
+    {
+      /*
+      lock (ValuesQueue)
+        ValuesQueue.Enqueue(newIntensities);      
+       * */
+
+      foreach (var I in newIntensities)
+      {
+
+        if (!NeuronIntensities.ContainsKey(I.Key))
+          NeuronIntensities.Add(I.Key, new List<double>());
+
+        NeuronIntensities[I.Key].Add(I.Value);
+      }
+
+      SaveValues(newIntensities, dt);
+    }
+
+    private void SaveValues(Dictionary<int, double> newIntensities, int dt)
+    {
+
+      foreach (var I in newIntensities)
+      {
+        if (!outputFiles.ContainsKey(I.Key))
+        {
+          outputFiles.Add(I.Key, new StreamWriter(pathToExportDirectory + "\\Neuron" + I.Key.ToString() + ".txt"));
+          string s = pathToExportDirectory + "\\Neuron" + I.Key.ToString() + ".txt";
+        }
+
+        outputFiles[I.Key].Write(I.Value.ToString());
+        outputFiles[I.Key].Write(" ");
+        outputFiles[I.Key].WriteLine(dt.ToString());
+      }
+    }
+
     private void SaveValues(Dictionary<int, double> newIntensities)
     {
       

@@ -70,7 +70,15 @@ namespace DiplomaMaster
 
     public Image<Gray, Byte> GetMaskImage()
     {
+
       return MaskImage;
+    }
+
+    public Image<Gray, Byte> GetMaskImage(Image<Gray, Byte> srcImage)
+    {
+      if (strategy != null)
+        return strategy.GenerateMask(srcImage);
+      else return null;
     }
 
     private void SplitMaskToMany()

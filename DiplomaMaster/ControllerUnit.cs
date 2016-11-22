@@ -59,7 +59,7 @@ namespace DiplomaMaster
       MaskingMaster.SetMethod(Params.MaskingModes[Params.CurMaskingMode]);
       DenoiseMaster.SetMethod(Params.DenoiseModes[Params.CurDenoiseMode], curImage);
       NeuronProvider.PrepareExport(Params);
-    
+      CurrentParams = Params;
     }
 
     // Переделать чтобы считывалось через ImageProvider
@@ -108,9 +108,9 @@ namespace DiplomaMaster
       catch (Exception ex) { return 0; }
 
       if (Mask == null) return 0;
-   if (!isMaskSizeGood(Mask)) return 1;
-   else
-   {
+      if (!isMaskSizeGood(Mask)) return 1;
+      else
+      {
         SetMask(Mask);
         return 2;
       }
@@ -132,8 +132,7 @@ namespace DiplomaMaster
 
     public  Image<Gray, Byte> GetMask()
     {
-      //return ImageParser.GetMask();
-      return null;
+      return MaskingMaster.GetMaskImage();
     }
 
     #endregion
@@ -152,6 +151,12 @@ namespace DiplomaMaster
         
       }
 
+      Image<Gray, byte> test = MaskingMaster.GetMaskImage();
+      test.Save(@"C:\Users\Админ\Desktop\СЕС\MaskImage.png");
+      List<NeuronBodyMask> NBML = MaskingMaster.GetListOfNeuronBodyMasks();
+      for (int i = 0; i < NBML.Count; i++)
+        //NBML[i].BodyMask.Save(CurrentParams.PathToSaveFolder + "\\mask_" + i.ToString() + ".Png");
+        NBML[i].BodyMask.Save(@"C:\Users\Админ\Desktop\СЕС\mask_" + i.ToString() + ".Png");
       Dictionary<int, List<double>> rr = NeuronProvider.NeuronIntensities;
       NeuronProvider.FinishSaving();
     }
@@ -179,7 +184,7 @@ namespace DiplomaMaster
       curImage = DenoiseMaster.Process(curImage);
       Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
       
-      NeuronProvider.AddValues(Intenisites);
+      NeuronProvider.AddValues(Intenisites, dt);
     }
 
     public  void Export(StructMainFormParams P, string path)

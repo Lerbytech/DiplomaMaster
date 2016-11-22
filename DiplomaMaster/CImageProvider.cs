@@ -111,8 +111,9 @@ namespace DiplomaMaster
       if (CurrImgIndex < TotalNumberOfImages)
       {
         IMG = new Image<Gray, byte>(FullPathsToFiles[CurrImgIndex]);
-        A = FullPathsToFiles[CurrImgIndex].LastIndexOf('_');
+        A = FullPathsToFiles[CurrImgIndex].LastIndexOf('_') + 1;
         Z = FullPathsToFiles[CurrImgIndex].IndexOf(".Png");
+        //string s = FullPathsToFiles[CurrImgIndex].Substring(A, Z - A);
         dt = Convert.ToInt32( FullPathsToFiles[CurrImgIndex].Substring(A, Z - A));
       }
       else

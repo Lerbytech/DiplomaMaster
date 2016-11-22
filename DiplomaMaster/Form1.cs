@@ -21,6 +21,7 @@ namespace DiplomaMaster
     private Image<Bgr, Byte> _BigImage;
     private Image<Gray, Byte> _MaskImage;
     private Image<Bgr, Byte> _AugImage;
+    private Image<Gray, Byte> _smallImage;
 
     private StructMainFormParams MainFormParameters;
     private CControllerUnit ControllerUnit;
@@ -66,6 +67,7 @@ namespace DiplomaMaster
         MainFormParameters.PathToLoadFolder = value;
         //ControllerUnit.Initialize(MainFormParameters);
         DrawSampleImage();
+        
       }
     }
     public string save_path
@@ -76,6 +78,7 @@ namespace DiplomaMaster
         MainFormParameters.PathToSaveFolder = value;
         ControllerUnit.Initialize(MainFormParameters);
         TB_SavePath.Text = value;
+        DrawMaskImage();
       }
     }
 
@@ -128,6 +131,14 @@ namespace DiplomaMaster
         CB_MaskingMode.SelectedIndex = 0;
         MainFormParameters.CurMaskingMode = 0;
       }
+    }
+
+    private void DrawMaskImage()
+    {
+      MaskImage = ControllerUnit.GetMask();
+
+
+
     }
 
     private void DrawSampleImage()
