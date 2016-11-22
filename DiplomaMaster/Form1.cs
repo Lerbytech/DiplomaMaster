@@ -135,7 +135,7 @@ namespace DiplomaMaster
 
     private void DrawMaskImage()
     {
-      MaskImage = ControllerUnit.GetMask();
+      //MaskImage = ControllerUnit.GetMask();
 
 
 
@@ -158,7 +158,9 @@ namespace DiplomaMaster
     public void UpdateImageBox(Image<Gray, Byte> newImage)
     {
       //BigImageBox.Image = newImage.Copy().Resize(BigImageBox.Width, BigImageBox.Height, Inter.Linear);
-      ProgressBar.Value += 1;
+      
+      //ProgressBar.Value += 1;
+      
       Application.DoEvents();
     }
 

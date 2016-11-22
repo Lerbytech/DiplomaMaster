@@ -59,7 +59,7 @@ namespace DiplomaMaster
     {
       MaskImage = strategy.GenerateMask(Input);
       SplitMaskToMany();
-
+      
       return strategy.GenerateMask(Input);
     }
 
@@ -91,7 +91,7 @@ namespace DiplomaMaster
       List<VectorOfPoint> rejectedContours = new List<VectorOfPoint>();
 
       //!!
-      int Threshold = 100; // длина контура в пикселях
+      int Threshold = 10; // длина контура в пикселях
       //!!
 
       List<VectorOfPoint> BigContours = NeuronSeparation.Calculations.SeparateSmallContours(NeuronSeparation.Converter.VVOPToListOfVOP(AllContours), out smallContours, out rejectedContours, Threshold);

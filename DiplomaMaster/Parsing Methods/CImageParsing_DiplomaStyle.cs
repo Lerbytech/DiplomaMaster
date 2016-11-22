@@ -23,10 +23,12 @@ namespace DiplomaMaster.ImageParsingMethods
       Image<Gray, Byte> TMP = ImgProcTools.BinarizationMethods.BinByDistanceTransform(Mask);
       
       VectorOfVectorOfPoint AllContours = ImgProcTools.EdgeDetection.SimplestEdgeDetection(TMP);
-    
+
+      int threshold = 10;
       List<VectorOfPoint> smallContours = new List<VectorOfPoint>();
       List<VectorOfPoint> rejectedContours = new List<VectorOfPoint>();
-      List<VectorOfPoint> BigContours = NeuronSeparation.Calculations.SeparateSmallContours(NeuronSeparation.Converter.VVOPToListOfVOP(AllContours), out smallContours, out rejectedContours, 100);
+      List<VectorOfPoint> BigContours = NeuronSeparation.Calculations.SeparateSmallContours(NeuronSeparation.Converter.VVOPToListOfVOP(AllContours),
+                                                                                            out smallContours, out rejectedContours, threshold);
 
       Masks = new List<NeuronBodyMask>();
       Masks = NeuronSeparation.Masks.GetNeuronBodyMasks(BigContours);

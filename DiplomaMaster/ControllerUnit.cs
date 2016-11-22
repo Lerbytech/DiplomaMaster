@@ -147,6 +147,7 @@ namespace DiplomaMaster
       for (int i = 0; i < N; i++)
       {
          Loop();
+        curImage.Save(CurrentParams.PathToSaveFolder + i.ToString() + ".Png");
         onNewImage(curImage);
         
       }
@@ -155,8 +156,8 @@ namespace DiplomaMaster
       test.Save(@"C:\Users\Админ\Desktop\СЕС\MaskImage.png");
       List<NeuronBodyMask> NBML = MaskingMaster.GetListOfNeuronBodyMasks();
       for (int i = 0; i < NBML.Count; i++)
-        //NBML[i].BodyMask.Save(CurrentParams.PathToSaveFolder + "\\mask_" + i.ToString() + ".Png");
-        NBML[i].BodyMask.Save(@"C:\Users\Админ\Desktop\СЕС\mask_" + i.ToString() + ".Png");
+        NBML[i].BodyMask.Save(CurrentParams.PathToSaveFolder + "\\mask_" + i.ToString() + ".Png");
+        //NBML[i].BodyMask.Save(@"C:\Users\Админ\Desktop\СЕС\mask_" + i.ToString() + ".Png");
       Dictionary<int, List<double>> rr = NeuronProvider.NeuronIntensities;
       NeuronProvider.FinishSaving();
     }
@@ -182,8 +183,8 @@ namespace DiplomaMaster
       if (curImage == null) ; //поднять ивент о бяде или конце работы
 
       curImage = DenoiseMaster.Process(curImage);
-      Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
       
+      Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
       NeuronProvider.AddValues(Intenisites, dt);
     }
 
