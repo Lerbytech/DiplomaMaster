@@ -19,6 +19,7 @@ namespace DiplomaMaster
     public bool doOverwriteFiles;
     public bool doUseCleanFiles;
     public bool doRecalculateMasks;
+    public bool doUseDenoiseOnly;
     public int RecalculationRate;
     public List<string> DenoiseModes;
     public int CurDenoiseMode;
@@ -39,6 +40,7 @@ namespace DiplomaMaster
       MaskingModes = new List<string>();
       CurMaskingMode = 0;
       sampleImage = null;
+      doUseDenoiseOnly = false;
     }
   }
 }

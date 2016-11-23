@@ -147,10 +147,33 @@ namespace DiplomaMaster
       curImage = CImageProvider.GetImage(0);
       maskImage = MaskingMaster.Process(curImage);
       ImageParser.PrepareImageParsingMethod(maskImage);
+
+      if (CurrentParams.doUseDenoiseOnly)
+      {
+        int time = 0;
+        for (int i = 26566; i < N; i++)
+        {
+          time = DenoiseLoop();
+          curImage.Save(CurrentParams.PathToSaveFolder + "\\" + i.ToString() + "_" + time.ToString() + ".Png");
+        }
+        return;
+      }
+      /*
+      for (int i = 0; i < N; i++)
+      {
+        Loop2();
+        //Loop(medianImage);
+        //curImage.Save(CurrentParams.PathToSaveFolder + i.ToString() + ".Png");
+        onNewImage(curImage);
+        curImage.Save(@"" + i.ToString() + ".png");
+      }
+      */
+
       //Image<Gray, Byte> medianImage = new Image<Gray, byte>(@"");
       for (int i = 0; i < N; i++)
       {
          Loop();
+         //Loop(medianImage);
         //curImage.Save(CurrentParams.PathToSaveFolder + i.ToString() + ".Png");
         onNewImage(curImage);
         
@@ -190,6 +213,28 @@ namespace DiplomaMaster
       Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
       //NeuronProvider.AddValues(Intenisites, dt);
       NeuronProvider.AddValues(Intenisites);
+    }
+
+    private int DenoiseLoop()
+    {     
+      int dt = 0;
+      curImage = CImageProvider.GetImage(out dt);      
+      curImage = DenoiseMaster.Process(curImage);
+      return dt;
+    }
+
+    private void Loop2()
+    {
+      //int dt = 0;
+      //curImage = CImageProvider.GetImage(out dt);
+      curImage = CImageProvider.GetImage();
+      if (curImage == null) ; //поднять ивент о бяде или конце работы
+
+      curImage = DenoiseMaster.Process(curImage);
+
+      //Intenisites = ImageParser.ApplyMask(curImage); // получаем словарь с данными интенсивностей нейронов      
+      //NeuronProvider.AddValues(Intenisites, dt);
+      //NeuronProvider.AddValues(Intenisites);
     }
 
     private void Loop(Image<Gray, Byte> backgroundImage)

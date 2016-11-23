@@ -66,6 +66,16 @@ namespace DiplomaMaster
     }
 
     /// <summary>
+    /// Сбрасывает индекс текущего изображения на ноль. Позволяет возобновить работу
+    /// </summary>
+
+
+    public static void ResetImageProvider()
+    {
+      CurrImgIndex = 0;
+    }
+
+    /// <summary>
     /// Получить новое изображение. Если его нет, возвращает null.
     /// </summary>
     /// <returns> изображение Image<Gray, Byte> или null</returns>

@@ -67,32 +67,6 @@ namespace DiplomaMaster.ImageParsingMethods
         res.Add(n, cap);
       }
 
-
-                     /*
-      while (k<100)
-      {
-        //SignalImg = newImage; // Masks[0].BodyMask.CopyBlank();
-        biggerImg = new Image<Gray, byte>(Masks[0].BodyMask.Width, Masks[0].BodyMask.Height, new Gray(0));
-        k++;
-      }
-      for (k = 0; k < 100; k++)
-      {
-        for (int i = 0; i < Masks.Count; i++)
-        {
-          try
-          {
-            //CvInvoke.cvSetImageROI(biggerImg , new Rectangle(5,5,172,130));
-            CvInvoke.cvSetImageROI(biggerImg, new Rectangle(5, 5, 172, 130));
-            newImage.CopyTo(biggerImg);
-            CvInvoke.cvResetImageROI(biggerImg);
-
-            SignalImg = biggerImg.Copy(Masks[i].BodyMask);// -MinImg;
-            //res.Add(i, CvInvoke.Sum(SignalImg).V0);
-          }
-          catch (Exception ex) { }
-        }
-      }
-                      * */
       return res;
     }
   }

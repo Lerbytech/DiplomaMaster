@@ -164,32 +164,8 @@ namespace DiplomaMaster
     private void DrawAugmentatedImage()
     {
       Image<Bgr, Byte> res = BigImage.Clone();
-      Image<Gray, Byte> mask = MaskImage.ThresholdBinary(new Gray(1), new Gray(128));
-      
-      byte[, ,] resData = res.Data;
-      byte[, ,] maskData = mask.Data;
-      byte[, ,] smallData = SmallImage.Data;
-
-      byte val = 128;
-
-      int H = res.Height;
-      int W = res.Width;
-
-
-      for (int y = 0; y < H; y++)
-        for (int x = 0; x < W; x++)
-        {
-          if (maskData[y, x, 0] == 255)
-          {
-            resData[y, x, 0] = 255;
-            resData[y, x, 1] = 255;
-            resData[y, x, 2] = 255;
-          }
-        }
-      //res[1] = mask;
-
+      res[1] = res[1] + MaskImage.ThresholdBinary(new Gray(1), new Gray(100));
       AugImage = res;
-
     }
     #endregion
 
@@ -249,8 +225,74 @@ namespace DiplomaMaster
 
     private void BTN_ExportMask_Click(object sender, EventArgs e)
     {
+
+      //-----
+      /*
+      string pathDir = @"C:\Users\Admin\Desktop\Антон\59 vanb\Source\Debug_2nd experiment work2";
+      string[] filenames = Directory.GetFiles(pathDir);
+
+      OrderFiles(ref filenames);
+      string destDir = @"C:\Users\Admin\Desktop\Антон\59 vanb\Splitted\Debug_2nd experiment work2 Chunk 2\";
+      string ss = String.Empty;
+
+      for (int i = 120524; i < filenames.Length; i++)
+      {
+
+        ss = filenames[i].Substring(filenames[i].LastIndexOf("\\") + 1);
+        ss = destDir + ss;
+        File.Copy(filenames[i], ss);
+
+      }
+        */
+
+      //-----
+
       MessageBox.Show("NOT IMPLEMENTED YET!!");
     }
+
+
+    private void OrderFiles(ref string[] FileEntries)
+    {
+      SortedDictionary<int, List<string>> LineLengthsDict = new SortedDictionary<int, List<string>>();
+
+      int L = 0;
+      for (int i = 0; i < FileEntries.Length; i++)
+      {
+        L = FileEntries[i].Length;
+        if (!LineLengthsDict.ContainsKey(L))
+          LineLengthsDict.Add(L, new List<string>());
+
+        LineLengthsDict[L].Add(FileEntries[i]);
+      }
+
+      List<string> res = new List<string>();
+
+      foreach (var I in LineLengthsDict)
+        res.AddRange(I.Value);
+      //FullPathsToFiles = res.ToArray();
+
+      FileEntries = res.ToArray();
+      /*
+     List<List<string>> Data = new List<List<string>>();
+
+     L = PathToDirectory.Length + FileExtension.Length;
+
+     for (int i = 0; i < FileEntries.Length; i++)
+     {
+       if (FileEntries[i].Length > Data.Count + L)
+       {
+         Data.Add(new List<string>());
+       }
+       Data[FileEntries[i].Length - Data.Count - L].Add(FileEntries[i]);
+     }
+
+     List<string> Final = new List<string>();
+     foreach (var I in Data)
+       Final.AddRange(I);
+        */
+      //FullPathsToFiles = Final.ToArray();
+    }
+
 
     private void BTN_SeeAllMasks_Click(object sender, EventArgs e)
     {
@@ -337,7 +379,6 @@ namespace DiplomaMaster
 
     private void CB_UseCleanFiles_CheckedChanged(object sender, EventArgs e)
     {
-
       if (CB_UseCleanFiles.Checked)
         MainFormParameters.doUseCleanFiles = true;
       else MainFormParameters.doUseCleanFiles = false;
@@ -369,6 +410,13 @@ namespace DiplomaMaster
         MainFormParameters.RecalculationRate = -1;
       }
 
+    }
+
+    private void CB_UseDenoiseOnly_CheckedChanged(object sender, EventArgs e)
+    {
+      if (CB_UseDenoiseOnly.Checked)
+        MainFormParameters.doUseDenoiseOnly = true;
+      else MainFormParameters.doUseDenoiseOnly = false;
     }
   }
 }

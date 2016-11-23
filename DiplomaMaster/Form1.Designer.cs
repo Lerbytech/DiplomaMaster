@@ -66,6 +66,7 @@
       this.label3 = new System.Windows.Forms.Label();
       this.label11 = new System.Windows.Forms.Label();
       this.label12 = new System.Windows.Forms.Label();
+      this.CB_UseDenoiseOnly = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
@@ -86,7 +87,7 @@
       // 
       // BTN_StartProcessing
       // 
-      this.BTN_StartProcessing.Location = new System.Drawing.Point(1209, 358);
+      this.BTN_StartProcessing.Location = new System.Drawing.Point(1209, 375);
       this.BTN_StartProcessing.Margin = new System.Windows.Forms.Padding(2);
       this.BTN_StartProcessing.Name = "BTN_StartProcessing";
       this.BTN_StartProcessing.Size = new System.Drawing.Size(68, 29);
@@ -245,7 +246,7 @@
       this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
       this.tableLayoutPanel1.ColumnCount = 2;
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 292F));
-      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 416F));
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 418F));
       this.tableLayoutPanel1.Controls.Add(this.label8, 1, 0);
       this.tableLayoutPanel1.Controls.Add(this.label9, 1, 2);
       this.tableLayoutPanel1.Controls.Add(this.CB_MaskingMode, 0, 3);
@@ -282,7 +283,7 @@
       // 
       // BTN_LoadMask
       // 
-      this.BTN_LoadMask.Location = new System.Drawing.Point(1209, 176);
+      this.BTN_LoadMask.Location = new System.Drawing.Point(1209, 193);
       this.BTN_LoadMask.Name = "BTN_LoadMask";
       this.BTN_LoadMask.Size = new System.Drawing.Size(139, 23);
       this.BTN_LoadMask.TabIndex = 15;
@@ -292,7 +293,7 @@
       // 
       // BTN_ExportMask
       // 
-      this.BTN_ExportMask.Location = new System.Drawing.Point(1209, 204);
+      this.BTN_ExportMask.Location = new System.Drawing.Point(1209, 221);
       this.BTN_ExportMask.Name = "BTN_ExportMask";
       this.BTN_ExportMask.Size = new System.Drawing.Size(139, 23);
       this.BTN_ExportMask.TabIndex = 16;
@@ -302,7 +303,7 @@
       // 
       // BTN_SeeAllMasks
       // 
-      this.BTN_SeeAllMasks.Location = new System.Drawing.Point(1209, 233);
+      this.BTN_SeeAllMasks.Location = new System.Drawing.Point(1209, 250);
       this.BTN_SeeAllMasks.Name = "BTN_SeeAllMasks";
       this.BTN_SeeAllMasks.Size = new System.Drawing.Size(139, 23);
       this.BTN_SeeAllMasks.TabIndex = 17;
@@ -323,7 +324,7 @@
       // 
       // BTN_EditMask
       // 
-      this.BTN_EditMask.Location = new System.Drawing.Point(1209, 146);
+      this.BTN_EditMask.Location = new System.Drawing.Point(1209, 163);
       this.BTN_EditMask.Name = "BTN_EditMask";
       this.BTN_EditMask.Size = new System.Drawing.Size(139, 23);
       this.BTN_EditMask.TabIndex = 19;
@@ -334,7 +335,7 @@
       // CB_RecalcMasks
       // 
       this.CB_RecalcMasks.AutoSize = true;
-      this.CB_RecalcMasks.Location = new System.Drawing.Point(1209, 277);
+      this.CB_RecalcMasks.Location = new System.Drawing.Point(1209, 294);
       this.CB_RecalcMasks.Name = "CB_RecalcMasks";
       this.CB_RecalcMasks.Size = new System.Drawing.Size(140, 17);
       this.CB_RecalcMasks.TabIndex = 20;
@@ -345,7 +346,7 @@
       // TB_RecalcMasksRate
       // 
       this.TB_RecalcMasksRate.Enabled = false;
-      this.TB_RecalcMasksRate.Location = new System.Drawing.Point(1236, 314);
+      this.TB_RecalcMasksRate.Location = new System.Drawing.Point(1236, 331);
       this.TB_RecalcMasksRate.Name = "TB_RecalcMasksRate";
       this.TB_RecalcMasksRate.Size = new System.Drawing.Size(100, 20);
       this.TB_RecalcMasksRate.TabIndex = 21;
@@ -354,7 +355,7 @@
       // label6
       // 
       this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(1224, 298);
+      this.label6.Location = new System.Drawing.Point(1224, 315);
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(97, 13);
       this.label6.TabIndex = 22;
@@ -363,7 +364,7 @@
       // label7
       // 
       this.label7.AutoSize = true;
-      this.label7.Location = new System.Drawing.Point(1207, 314);
+      this.label7.Location = new System.Drawing.Point(1207, 331);
       this.label7.Name = "label7";
       this.label7.Size = new System.Drawing.Size(27, 13);
       this.label7.TabIndex = 23;
@@ -440,12 +441,24 @@
       this.label12.TabIndex = 32;
       this.label12.Text = "Аугментированное изображение:";
       // 
+      // CB_UseDenoiseOnly
+      // 
+      this.CB_UseDenoiseOnly.AutoSize = true;
+      this.CB_UseDenoiseOnly.Location = new System.Drawing.Point(1198, 132);
+      this.CB_UseDenoiseOnly.Name = "CB_UseDenoiseOnly";
+      this.CB_UseDenoiseOnly.Size = new System.Drawing.Size(206, 17);
+      this.CB_UseDenoiseOnly.TabIndex = 33;
+      this.CB_UseDenoiseOnly.Text = "Запустить только шумоподавление";
+      this.CB_UseDenoiseOnly.UseVisualStyleBackColor = true;
+      this.CB_UseDenoiseOnly.CheckedChanged += new System.EventHandler(this.CB_UseDenoiseOnly_CheckedChanged);
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.ClientSize = new System.Drawing.Size(1404, 810);
+      this.Controls.Add(this.CB_UseDenoiseOnly);
       this.Controls.Add(this.label12);
       this.Controls.Add(this.label11);
       this.Controls.Add(this.label3);
@@ -526,6 +539,7 @@
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.Label label12;
+    private System.Windows.Forms.CheckBox CB_UseDenoiseOnly;
   }
 }
 

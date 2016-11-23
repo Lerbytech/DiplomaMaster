@@ -17,7 +17,8 @@ namespace DiplomaMaster.DenoisingMethods
       void IDenoiseStrategy.PrepareDenoiseMethod(Image<Gray, byte> input)
       {
         if (input == null) return;
-          ImgProcTools.Denoise.PrepareDenoiseFunctions(input.Width, input.Height);
+        //ImgProcTools.Denoise.PrepareDenoiseFunctions(input.Width, input.Height);
+        ImgProcTools.Denoise.PrepareDenoiseFunctions(input);
       }
     }
 }

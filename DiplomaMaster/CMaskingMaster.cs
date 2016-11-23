@@ -59,8 +59,8 @@ namespace DiplomaMaster
     {
       MaskImage = strategy.GenerateMask(Input);
       SplitMaskToMany();
-      
-      return strategy.GenerateMask(Input);
+
+      return MaskImage;
     }
 
     public List<NeuronBodyMask> GetListOfNeuronBodyMasks()

@@ -90,6 +90,16 @@ namespace DiplomaMaster
         arr = new List<Image<Gray, byte>>();
         for (int i = 0; i < 4; i++) arr.Add(tmp);
       }
+
+
+      public static void PrepareDenoiseFunctions(Image<Gray, byte> exampleImage)
+      {
+        WIDTH = exampleImage.Width;
+        HEIGHT = exampleImage.Height;
+        arr = new List<Image<Gray, byte>>();
+        for (int i = 0; i < 4; i++) arr.Add(exampleImage);
+      }
+
       private static double Average(double[] arr)
       {
         double avr = 0.0;
