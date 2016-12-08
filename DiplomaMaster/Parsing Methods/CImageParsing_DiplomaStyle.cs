@@ -24,7 +24,7 @@ namespace DiplomaMaster.ImageParsingMethods
       
       VectorOfVectorOfPoint AllContours = ImgProcTools.EdgeDetection.SimplestEdgeDetection(TMP);
 
-      int threshold = 10;
+      int threshold = 0;
       List<VectorOfPoint> smallContours = new List<VectorOfPoint>();
       List<VectorOfPoint> rejectedContours = new List<VectorOfPoint>();
       List<VectorOfPoint> BigContours = NeuronSeparation.Calculations.SeparateSmallContours(NeuronSeparation.Converter.VVOPToListOfVOP(AllContours),

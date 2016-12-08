@@ -116,6 +116,8 @@ namespace DiplomaMaster
     {
       dt = 0;
 
+      //CurrImgIndex = 26566 - 6501;
+      //string ss = FullPathsToFiles[CurrImgIndex];
       int A;
       int Z;
       if (CurrImgIndex < TotalNumberOfImages)
